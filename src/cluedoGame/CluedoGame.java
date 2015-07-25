@@ -13,7 +13,7 @@ public class CluedoGame {
 	public CluedoGame(){
 		ui = new TextInterface();
 		System.out.println(ui.requestInput("Test Input"));
-		
+		System.out.println(ui.requestPoint("Enter a point.","Not a valid point!"));
 	}
 
 }
