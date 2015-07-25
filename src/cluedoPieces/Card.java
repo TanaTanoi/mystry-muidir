@@ -1,5 +1,11 @@
 package cluedoPieces;
 
-public abstract class Card {
+public interface Card {
 
+	enum WeaponType{
+		CANDLESTICK,DAGGER,LEAD_PIPE,
+		REVOLVER,ROPE,SPANNER
+	}
+	
+	
 }
