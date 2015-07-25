@@ -10,6 +10,11 @@ public class Board {
 	private static final int boardSize = 26;
 	Square[][] board;
 	
+	
+	/**
+	 * Represents every different kind of square in the game
+	 *
+	 */
 	enum Square{
 		NA,		//Inaccessible 
 		OPEN,	//open area
@@ -34,6 +39,14 @@ public class Board {
 		STUDY_DOOR
 	}
 	
+	//This enum set represents a door into a room, for ease of use. Use the roomsDoor
+	//method to find the room that links to this door
+	EnumSet<Square> doors = EnumSet.of(Square.KITCHEN_DOOR,Square.BALLROOM_DOOR,Square.CONSERVATORY_DOOR,
+			Square.DINING_ROOM_DOOR,Square.BILLIARD_ROOM_DOOR,Square.LIBRARY_DOOR,Square.LOUNGE_DOOR,
+			Square.HALL_DOOR,Square.STUDY_DOOR);
+	
+	
+	
 	//This map represents the layout.txt characters to an enum. This must be loaded before use, through loadLegend()
 	Map<String,Square> layoutLegend = new HashMap<String,Square>();
 	
@@ -43,7 +56,6 @@ public class Board {
 		this.loadLegend();
 		this.loadLayout();
 	}
-	
 	
 	
 	/**
@@ -76,8 +88,6 @@ public class Board {
 		if(layoutLegend.isEmpty())
 			throw new RuntimeException("Layout legend has not been loaded!");//TODO as above-above
 		try{
-			File f = new File(LAYOUT_FILE);
-			
 			Scanner sc = new Scanner(new File(LAYOUT_FILE));
 			sc.useDelimiter("");
 			int i, j;//i and j are counters
@@ -85,6 +95,7 @@ public class Board {
 			while(sc.hasNext()){
 				String input = sc.next();
 				System.out.print(input);
+				
 				board[i][j] = layoutLegend.get(input);				
 				if(i>=boardSize){
 					j++;
@@ -93,10 +104,23 @@ public class Board {
 				}
 				
 			}
+			sc.close();
 		}catch(IOException e){
 			throw new RuntimeException("Missing layout.txt file!");//TODO find better exception
 			
 		}
 	}
 	
+	
+	/**
+	 * Finds the room associated with a particular door, returning the Square Enum associated with it.
+	 * Assumes the parameter is within the 'doors' 'Square' enum subset
+	 * @param door
+	 * @return
+	 */
+	private Square roomsDoor(Square door){//FIXME stupid name, can't think of anything short
+		if(!doors.contains(door)){throw new IllegalArgumentException("Must enter a door as a parameter!");}
+		String squareName = door.toString().replaceFirst("_DOOR", "");
+		return Square.valueOf(squareName);//TODO type check this, unless valueOf just errors
+	}
 }
