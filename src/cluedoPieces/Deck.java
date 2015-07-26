@@ -1,6 +1,7 @@
 package cluedoPieces;
 
 import java.util.*;
+import cluedoPieces.Card.*;
 
 public class Deck {
 
@@ -75,19 +76,21 @@ public class Deck {
 			i = i % players.size();
 		}
 	}
+
 	/**
 	 * Privately used method that loads in the hard coded cards into the game, depending on the enums.
-	 * THERE MAY BE A BETTER WAY TO DO THIS RATHER THAN ONE FOR EACH LINE?
 	 */
 	private void loadDeck(){
-		//Add all weapons
-		weaponPile.add(new WeaponCard(Card.WeaponType.CANDLESTICK));
-		weaponPile.add(new WeaponCard(Card.WeaponType.DAGGER));
-		weaponPile.add(new WeaponCard(Card.WeaponType.LEAD_PIPE));
-		weaponPile.add(new WeaponCard(Card.WeaponType.REVOLVER));
-		weaponPile.add(new WeaponCard(Card.WeaponType.ROPE));
-		weaponPile.add(new WeaponCard(Card.WeaponType.SPANNER));
-		//TODO add rest of types
+		//Add all weapons+
+		for (WeaponType w:WeaponType.values()){
+			weaponPile.add(new WeaponCard(w));
+		}
+		for (Person c:Person.values()){
+			characterPile.add(new CharacterCard(c));
+		}
+		for (RoomType r:RoomType.values()){
+			roomPile.add(new RoomCard(r));
+		}
 	}
 	
 }

@@ -1,5 +1,6 @@
 package cluedoPieces;
 
+import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
@@ -111,7 +112,45 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * This method finds all points that can be reached from a given position 
+	 * and returns the set. Assumes the source point is accessible, else throws error.
+	 * @param s - The source point (e.g. where the player is)
+	 * @param radius - Amount of steps away from the source that can be moved too
+	 * @return - Set of accessible Point objects
+	 */
+	public Set<Point> reachablePoints(Point s,int radius){
+		if(board[s.x][s.y] != Square.OPEN&&!doors.contains(board[s.x][s.y])){//if the source is not a valid square
+			throw new IllegalArgumentException("Cannot find points from inaccessible source!");
+		}
+		Set<Point> toReturn = new HashSet<Point>();
+		reachableRec(toReturn,s.x,s.y,radius);
+		return toReturn;
+	}
 	
+	/**
+	 * Recursive method used by reachablePoints method that adds all nearby, accessible points
+	 * to the set until it runs out of steps or combinations.
+	 * @param visited
+	 * @param x
+	 * @param y
+	 * @param stepsLeft
+	 */
+	private void reachableRec(Set<Point> visited, int x, int y, int stepsLeft){
+		if(stepsLeft<=0)return;												//base case #1, if no steps left
+		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #2, if not valid square 
+		Point current = new Point(x,y);
+		if(visited.contains(current))return;								//base case #3, if already visited 
+		stepsLeft--;
+		visited.add(current);
+		reachableRec(visited,x+1,y,stepsLeft);
+		reachableRec(visited,x-1,y,stepsLeft);
+		reachableRec(visited,x,y+1,stepsLeft);
+		reachableRec(visited,x,y-1,stepsLeft);
+		
+	}
+	
+	//TODO make a reachable rooms method that finds all rooms that can be reached from a certain point, if any
 	/**
 	 * Finds the room associated with a particular door, returning the Square Enum associated with it.
 	 * Assumes the parameter is within the 'doors' 'Square' enum subset
