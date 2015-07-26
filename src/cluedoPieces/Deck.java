@@ -14,6 +14,7 @@ public class Deck {
 		weaponPile= new ArrayList<Card>();
 		characterPile= new ArrayList<Card>();
 		murderCards  = new Card[3];
+		loadDeck();
 	}
 	
 	
@@ -23,7 +24,7 @@ public class Deck {
 	 * This also removes the cards from the deck, instead storing them in the array.
 	 * Note: Running this method requires the deck to be built
 	 */
-	public void selectMurderCards(){
+	private void selectMurderCards(){
 		if(!roomPile.isEmpty()&&!weaponPile.isEmpty()&&!characterPile.isEmpty()){
 			murderCards[0] = roomPile.remove((int)Math.random()*roomPile.size());
 			murderCards[1] = weaponPile.remove((int)Math.random()*weaponPile.size());
@@ -33,7 +34,27 @@ public class Deck {
 		}
 	}
 	
-	
+	/**
+	 * Compares an array of three cards to the murder cards. Returns true if the three cards 
+	 * are of the same type (As depicted in the Card implementation equals methods) else 
+	 * returns false.
+	 * If array is not suited, throws IllegalArgumentException
+	 * @param proposal
+	 * @return
+	 */
+	public boolean compareMurderCards(Card[] proposal){
+		if(proposal.length!=3||
+				!(proposal[1] instanceof WeaponCard)){//TODO add the other cards to this exception
+			throw new IllegalArgumentException("Requires array length of 3,"
+					+ " index 0 to be RoomCard, 1 to be WeaponCard, and 2 to be CharacterCard!");
+		}
+		for(int i = 0; i < 3;i++){
+			if(!proposal[i].equals(murderCards[i])){
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	
 	/**
@@ -54,7 +75,19 @@ public class Deck {
 			i = i % players.size();
 		}
 	}
-	
-	
+	/**
+	 * Privately used method that loads in the hard coded cards into the game, depending on the enums.
+	 * THERE MAY BE A BETTER WAY TO DO THIS RATHER THAN ONE FOR EACH LINE?
+	 */
+	private void loadDeck(){
+		//Add all weapons
+		weaponPile.add(new WeaponCard(Card.WeaponType.CANDLESTICK));
+		weaponPile.add(new WeaponCard(Card.WeaponType.DAGGER));
+		weaponPile.add(new WeaponCard(Card.WeaponType.LEAD_PIPE));
+		weaponPile.add(new WeaponCard(Card.WeaponType.REVOLVER));
+		weaponPile.add(new WeaponCard(Card.WeaponType.ROPE));
+		weaponPile.add(new WeaponCard(Card.WeaponType.SPANNER));
+		//TODO add rest of types
+	}
 	
 }
