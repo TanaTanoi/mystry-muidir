@@ -39,13 +39,15 @@ public class Deck {
 	 * Compares an array of three cards to the murder cards. Returns true if the three cards 
 	 * are of the same type (As depicted in the Card implementation equals methods) else 
 	 * returns false.
-	 * If array is not suited, throws IllegalArgumentException
+	 * If array is not suited, throws IllegalArgumentException.
 	 * @param proposal
 	 * @return
 	 */
 	public boolean compareMurderCards(Card[] proposal){
 		if(proposal.length!=3||
-				!(proposal[1] instanceof WeaponCard)){//TODO add the other cards to this exception
+				!(proposal[0] instanceof RoomCard)
+				!(proposal[1] instanceof WeaponCard)
+				!(proposal[2] instanceof CharacterCard)){
 			throw new IllegalArgumentException("Requires array length of 3,"
 					+ " index 0 to be RoomCard, 1 to be WeaponCard, and 2 to be CharacterCard!");
 		}
@@ -69,10 +71,10 @@ public class Deck {
 		shuffledDeck.addAll(weaponPile);
 		shuffledDeck.addAll(characterPile);
 		int i = 0;
-		while(!shuffledDeck.isEmpty()){			//while the deck is not empty, distribute the cards at random
+		while(!shuffledDeck.isEmpty()){	//while the deck is not empty, distribute the cards at random
 			players.get(i++).giveCard(
-					shuffledDeck.remove(
-							(int)Math.random()*shuffledDeck.size()));
+				shuffledDeck.remove(
+					(int)Math.random()*shuffledDeck.size()));
 			i = i % players.size();
 		}
 	}
