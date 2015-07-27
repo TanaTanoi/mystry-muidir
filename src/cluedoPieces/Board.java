@@ -8,7 +8,7 @@ public class Board {
 	
 	private static final String LAYOUT_FILE = "bin/assets/layout.txt";
 	private static final String LEGEND_FILE = "bin/assets/layout_legend.txt";
-	private static final int boardSize = 26;
+	private static final int boardSize = 25;
 	Square[][] board;
 	
 	
@@ -70,6 +70,7 @@ public class Board {
 				String line = sc.nextLine();
 				String[] lineSplit = line.split(":");
 				assert lineSplit.length == 2;
+				//first part is enum second part is character
 				layoutLegend.put(lineSplit[1], Square.valueOf(lineSplit[0]));
 			}
 			sc.close();
@@ -90,19 +91,26 @@ public class Board {
 			throw new RuntimeException("Layout legend has not been loaded!");//TODO as above-above
 		try{
 			Scanner sc = new Scanner(new File(LAYOUT_FILE));
-			sc.useDelimiter("");
+			
 			int i, j;//i and j are counters
 			i = j = 0;
 			while(sc.hasNext()){
-				String input = sc.next();
-				System.out.print(input);
-				
-				board[i][j] = layoutLegend.get(input);				
-				if(i>=boardSize){
-					j++;
-					i = 0;
-					System.out.println();
+				String line = sc.nextLine();		//read line
+				Scanner sc2 = new Scanner(line);	//analyse
+				sc2.useDelimiter("");
+				while(sc2.hasNext()){
+					String input = sc2.next();			
+					//System.out.print(input);
+					
+					board[i][j] = layoutLegend.get(input);
+					if(board[i][j]==null)
+						System.out.print("|"+i+" " +j+  " " + input+"|");
+					i++;
+					
 				}
+				i=0;
+				j++;
+				System.out.println();
 				
 			}
 			sc.close();
@@ -121,11 +129,11 @@ public class Board {
 	 */
 	public Set<Point> reachablePoints(Point s,int radius){
 		if(board[s.x][s.y] != Square.OPEN&&!doors.contains(board[s.x][s.y])){//if the source is not a valid square
-			throw new IllegalArgumentException("Cannot find points from inaccessible source!");
+			throw new IllegalArgumentException("Cannot find points from inaccessible source!: " + s.x + " " + s.y + " " + board[s.x][s.y]);
 		}
-		Set<Point> toReturn = new HashSet<Point>();
+		Map<Point,Integer> toReturn = new HashMap<Point,Integer>();
 		reachableRec(toReturn,s.x,s.y,radius);
-		return toReturn;
+		return toReturn.keySet();
 	}
 	
 	/**
@@ -136,19 +144,40 @@ public class Board {
 	 * @param y
 	 * @param stepsLeft
 	 */
-	private void reachableRec(Set<Point> visited, int x, int y, int stepsLeft){
+	private void reachableRec(Map<Point,Integer> visited, int x, int y, int stepsLeft){
 		if(stepsLeft<=0)return;												//base case #1, if no steps left
+		stepsLeft--;
 		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #2, if not valid square 
 		Point current = new Point(x,y);
-		if(visited.contains(current))return;								//base case #3, if already visited 
-		stepsLeft--;
-		visited.add(current);
+		if(visited.containsKey(current)&&
+				visited.get(current)>stepsLeft)return;						//base case #3, if current square has gone further than here
+		
+		visited.put(current,stepsLeft);										//even if its been visited, overwrite with longer path
 		reachableRec(visited,x+1,y,stepsLeft);
 		reachableRec(visited,x-1,y,stepsLeft);
 		reachableRec(visited,x,y+1,stepsLeft);
 		reachableRec(visited,x,y-1,stepsLeft);
 		
 	}
+	
+	public Set<Room.RoomName> reachableRooms(Point s, int radius){//Possibly may need to change the enum used here
+		if(board[s.x][s.y] != Square.OPEN&&!doors.contains(board[s.x][s.y])){//if the source is not a valid square
+			throw new IllegalArgumentException("Cannot find points from inaccessible source!");
+		}
+		Set<Room.RoomName> toReturn = new HashSet<Room.RoomName>();
+		
+		return toReturn;
+	}
+	
+	private void reachableRoomsRec(Set<Room.RoomName> reachable, Set<Point>visited, int x, int y, int stepsLeft){
+		if(stepsLeft<=1)return;												//base case #1, if no steps left
+		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #2, if not valid square 
+		Point current = new Point(x,y);
+		if(visited.contains(current))return;								//base case #3, if already visited 
+		stepsLeft--;
+		visited.add(current);
+	}
+	
 	
 	//TODO make a reachable rooms method that finds all rooms that can be reached from a certain point, if any
 	/**

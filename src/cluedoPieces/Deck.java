@@ -45,8 +45,8 @@ public class Deck {
 	 */
 	public boolean compareMurderCards(Card[] proposal){
 		if(proposal.length!=3||
-				!(proposal[0] instanceof RoomCard)
-				!(proposal[1] instanceof WeaponCard)
+				!(proposal[0] instanceof RoomCard)||
+				!(proposal[1] instanceof WeaponCard)||
 				!(proposal[2] instanceof CharacterCard)){
 			throw new IllegalArgumentException("Requires array length of 3,"
 					+ " index 0 to be RoomCard, 1 to be WeaponCard, and 2 to be CharacterCard!");
