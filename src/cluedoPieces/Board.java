@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
+import cluedoPieces.Room.RoomName;
+
 public class Board {
 	
 	private static final String LAYOUT_FILE = "bin/assets/layout.txt";
@@ -103,15 +105,15 @@ public class Board {
 					//System.out.print(input);
 					
 					board[i][j] = layoutLegend.get(input);
-					if(board[i][j]==null)
-						System.out.print("|"+i+" " +j+  " " + input+"|");
+					
+					//	System.out.print("|"+i+" " +j+  " " + input+"|");
 					i++;
 					
 				}
 				i=0;
 				j++;
-				System.out.println();
-				
+				//System.out.println();
+				sc2.close();
 			}
 			sc.close();
 		}catch(IOException e){
@@ -147,10 +149,11 @@ public class Board {
 	private void reachableRec(Map<Point,Integer> visited, int x, int y, int stepsLeft){
 		if(stepsLeft<=0)return;												//base case #1, if no steps left
 		stepsLeft--;
-		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #2, if not valid square 
+		if(x>=boardSize||x<0||y>=boardSize||y<0)return;						//case case #2, if out of bounds
+		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #3, if not valid square 
 		Point current = new Point(x,y);
 		if(visited.containsKey(current)&&
-				visited.get(current)>stepsLeft)return;						//base case #3, if current square has gone further than here
+				visited.get(current)>stepsLeft)return;						//base case #4, if current square has gone further than here
 		
 		visited.put(current,stepsLeft);										//even if its been visited, overwrite with longer path
 		reachableRec(visited,x+1,y,stepsLeft);
@@ -160,26 +163,84 @@ public class Board {
 		
 	}
 	
+	/**
+	 * Recursive method that finds the rooms accessible from a certain point. Throws exception
+	 * if point is not a valid source point. 
+	 * @param s - Source point (e.g. where the player is)
+	 * @param radius - Amount of steps the player can take
+	 * @return - A set of RoomName enums that represent available rooms.
+	 */
 	public Set<Room.RoomName> reachableRooms(Point s, int radius){//Possibly may need to change the enum used here
 		if(board[s.x][s.y] != Square.OPEN&&!doors.contains(board[s.x][s.y])){//if the source is not a valid square
 			throw new IllegalArgumentException("Cannot find points from inaccessible source!");
 		}
 		Set<Room.RoomName> toReturn = new HashSet<Room.RoomName>();
+		reachableRoomsRec(toReturn,new HashMap<Point,Integer>(),s.x,s.y,radius);//(The map is irrelevant past the execution of this method, so not saved)
+		return toReturn;
+	}
+	/**
+	 * Recursive method used for reachableRooms that adds to the set, the rooms reachable from the 
+	 * given point
+	 * @param reachable - Reachable rooms set
+	 * @param visited - Map of visited points to the amount of steps left at that point
+	 * @param x
+	 * @param y
+	 * @param stepsLeft
+	 */
+	private void reachableRoomsRec(Set<Room.RoomName> reachable, Map<Point,Integer> visited, int x, int y, int stepsLeft){
+		if(stepsLeft<=1)return;												//base case #1, if no steps left
+		stepsLeft--;
+		if(x>=boardSize||x<0||y>=boardSize||y<0)return;						//case case #2, if out of bounds
+		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #3, if not valid square 
+		Point current = new Point(x,y);
+		if(visited.containsKey(current)&&
+				visited.get(current)>stepsLeft)return;						//base case #4, if current square has gone further than here
+		visited.put(current, stepsLeft);
+		
+		if(doors.contains(board[x][y]) && stepsLeft>=1){
+			reachable.add(Room.RoomName.valueOf(this.roomsDoor(board[x][y]).toString()));//may need cleaning, might be better if use of other enum
+		}
+		
+		reachableRoomsRec(reachable, visited,x+1,y,stepsLeft);
+		reachableRoomsRec(reachable, visited,x-1,y,stepsLeft);
+		reachableRoomsRec(reachable, visited,x,y+1,stepsLeft);
+		reachableRoomsRec(reachable, visited,x,y-1,stepsLeft);
+	}
+	
+	/**
+	 * Method that finds the reachable rooms from a given room (as opposed to a given point)
+	 * @param room - Source Room
+	 * @param radius - Steps allowed (e.g. dice roll)
+	 * @return - Set containing visit-able rooms
+	 */
+	public Set<Room.RoomName> reachableRooms(RoomName room, int radius){//Possibly may need to change the enum used here
+		
+		Square door = doorsRoom(Square.valueOf(room.toString()));	//Finds the associated door   TODO null/invalid check
+		Set<Point> roomsDoors = findEnum(door);						//Find the points to do with that door
+		Set<Room.RoomName> toReturn = new HashSet<Room.RoomName>();
+		for(Point p:roomsDoors){
+			System.out.println("Start: " + p.x + " " + p.y);
+			toReturn.addAll(reachableRooms(p,radius));				//At all the door points, call the regular method
+		}
+		//SPECIAL CASES: Trap doors between corner rooms
+		switch(room){
+		case KITCHEN:
+			toReturn.add(RoomName.STUDY);break;
+		case STUDY:
+			toReturn.add(RoomName.KITCHEN);break;
+		case LOUNGE:
+			toReturn.add(RoomName.CONSERVATORY);break;
+		case CONSERVATORY:
+			toReturn.add(RoomName.LOUNGE);break;
+		default:
+			break;
+		}
+		toReturn.remove(room);//Remove self to prevent confusion
 		
 		return toReturn;
 	}
 	
-	private void reachableRoomsRec(Set<Room.RoomName> reachable, Set<Point>visited, int x, int y, int stepsLeft){
-		if(stepsLeft<=1)return;												//base case #1, if no steps left
-		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #2, if not valid square 
-		Point current = new Point(x,y);
-		if(visited.contains(current))return;								//base case #3, if already visited 
-		stepsLeft--;
-		visited.add(current);
-	}
 	
-	
-	//TODO make a reachable rooms method that finds all rooms that can be reached from a certain point, if any
 	/**
 	 * Finds the room associated with a particular door, returning the Square Enum associated with it.
 	 * Assumes the parameter is within the 'doors' 'Square' enum subset
@@ -191,4 +252,35 @@ public class Board {
 		String squareName = door.toString().replaceFirst("_DOOR", "");
 		return Square.valueOf(squareName);//TODO type check this, unless valueOf just errors
 	}
+	
+	/**
+	 * Finds the door associated with a particular room, returning the Square Enum associated with it.
+	 * Assumes the parameter is within the 'doors' 'Square' enum subset
+	 * @param door
+	 * @return
+	 */
+	private Square doorsRoom(Square room){
+		String squareName = room.toString()+"_DOOR";
+		Square result = Square.valueOf(squareName);
+		if(!doors.contains(result)){throw new IllegalArgumentException("Must enter a room as a parameter!");}
+		return result; //TODO type check this, unless valueOf just errors
+	}
+	
+	/**
+	 * Finds all the points in the map that contain the specified Square enum
+	 * @param target
+	 * @return
+	 */
+	private Set<Point> findEnum(Square target){
+		Set<Point> toReturn = new HashSet<Point>();
+		for(int x = 0; x < boardSize;x++){
+			for(int y = 0; y <boardSize;y++){
+				if(board[x][y].equals(target)){
+					toReturn.add(new Point(x,y));
+				}
+			}
+		}
+		return toReturn;
+	}
+	
 }

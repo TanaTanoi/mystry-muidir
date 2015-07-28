@@ -72,7 +72,7 @@ public class Deck {
 		shuffledDeck.addAll(characterPile);
 		int i = 0;
 		while(!shuffledDeck.isEmpty()){	//while the deck is not empty, distribute the cards at random
-			players.get(i++).giveCard(
+			players.get(i++).takeCard(
 				shuffledDeck.remove(
 					(int)Math.random()*shuffledDeck.size()));
 			i = i % players.size();

@@ -31,7 +31,7 @@ public class Player {
 	 * @return random number from 1 - 6
 	 */
 	public int rollDie(){
-		return (int)(Math.random()*6 + 1);
+		return (int)(Math.random()*7);
 	}
 	
 	public void answerSuggestion(WeaponCard w, RoomCard r, CharacterCard c){
