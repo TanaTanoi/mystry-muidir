@@ -17,9 +17,6 @@ public class CluedoGame {
 		//System.out.println(ui.requestInput("Test Input"));
 		//System.out.println(ui.requestPoint("Enter a point.","Not a valid point!"));
 		Board b = new Board();
-		while(true){
-			System.out.println("many overfed dogs");
-		}
 	}
 
 }
