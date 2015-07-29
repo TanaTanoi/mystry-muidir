@@ -22,7 +22,7 @@ public class CluedoTests {
 	Board b= new Board();
 	@Test
 	public void deck_create_1(){
-		deck = new Deck();
+	//	deck = new Deck();
 	}
 
 

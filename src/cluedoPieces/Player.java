@@ -9,7 +9,7 @@ import cluedoPieces.Card.*;
 public class Player {
 
 	Set<Card> hand;
-	private Point coords;
+	private Point pos;
 	private String name;// Players name
 
 	public Player(String name){
@@ -47,6 +47,13 @@ public class Player {
 	public RoomType getCurrentRoom(){
 		return null;
 	}
-
-
+	
+	public String getName(){
+		return name;
+	}
+	
+	
+	public void setPos(Point p){
+		pos = p;
+	}
 }

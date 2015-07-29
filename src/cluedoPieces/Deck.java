@@ -10,12 +10,14 @@ public class Deck {
 	private List<Card> characterPile;	//holds character cards
 	private Card[] murderCards;			//holds the three cards that solve the murder, 
 										//1: Room, 2: Weapon, 3: Character
-	public Deck(){
+	public Deck(List<Player> players){
 		roomPile= new ArrayList<Card>();
 		weaponPile= new ArrayList<Card>();
 		characterPile= new ArrayList<Card>();
 		murderCards  = new Card[3];
 		loadDeck();
+		selectMurderCards();
+		distributeCards(players);
 	}
 	
 	
@@ -48,8 +50,7 @@ public class Deck {
 				!(proposal[0] instanceof RoomCard)||
 				!(proposal[1] instanceof WeaponCard)||
 				!(proposal[2] instanceof CharacterCard)){
-			throw new IllegalArgumentException("Requires array length of 3,"
-					+ " index 0 to be RoomCard, 1 to be WeaponCard, and 2 to be CharacterCard!");
+			throw new IllegalArgumentException("Requires array length of 3, index 0 to be RoomCard, 1 to be WeaponCard, and 2 to be CharacterCard!");
 		}
 		for(int i = 0; i < 3;i++){
 			if(!proposal[i].equals(murderCards[i])){
@@ -65,7 +66,7 @@ public class Deck {
 	 * 
 	 * @param players
 	 */
-	public void disbCards(List<Player> players){
+	private void distributeCards(List<Player> players){
 		List<Card> shuffledDeck = new ArrayList<Card>();
 		shuffledDeck.addAll(roomPile);
 		shuffledDeck.addAll(weaponPile);

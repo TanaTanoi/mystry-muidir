@@ -32,7 +32,7 @@ public class TextInterface {
 			byte[] input = new byte[MAX_INPUT_BUFFER];
 			int read = System.in.read(input, 0, MAX_INPUT_BUFFER);	
 			if(read>0){
-				return new String(input);
+				return new String(input).trim();
 			}else{
 				return "\n";
 			}

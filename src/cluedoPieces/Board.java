@@ -13,6 +13,8 @@ public class Board {
 	private static final int boardSize = 25;
 	Square[][] board;
 	
+	//private static final Point[] PLAYER_STARTS = {new Point(9,0), new Point(16,0), new Point(24,6), new Point(23,19), new Point(7,24), new Point(0,17)};
+	//Hard coded start points FIXME no
 	
 	/**
 	 * Represents every different kind of square in the game
@@ -39,7 +41,13 @@ public class Board {
 		HALL,
 		HALL_DOOR,
 		STUDY,
-		STUDY_DOOR
+		STUDY_DOOR,
+		S_1,//Starting positions for each character
+		S_2,
+		S_3,
+		S_4,
+		S_5,
+		S_6
 	}
 	
 	//This enum set represents a door into a room, for ease of use. Use the roomsDoor
@@ -282,5 +290,24 @@ public class Board {
 		}
 		return toReturn;
 	}
-	
+	/**
+	 * Finds the starting point of players based on their number (1 - 6)
+	 * 
+	 * @param player - Index of player
+	 * @return - Starting point for that player
+	 */
+	public Point findPlayerStart(int player){
+		
+		if(player>6||player<1)throw new IllegalArgumentException("Only 1 to 6 players!");
+		
+		Square toFind = Square.valueOf("S_"+player);
+		for(int x = 0; x < boardSize;x++){
+			for(int y = 0; y <boardSize;y++){
+				if(board[x][y].equals(toFind)){
+					return new Point(x,y);
+				}
+			}
+		}
+		return null;//DEAD CODE hopefully lol
+	}
 }
