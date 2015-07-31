@@ -16,15 +16,15 @@ S:	Study
 The following use the characters
 Shift+[1-9] to represent an entry way
 to a room, going right to left;
-!:	Kitchen Entry Spot
-@:	Ballroom "		"
-#:	Conservatory "  "
-$:	Dining Room "	"
-%:	Billiard Room 	" 
-^:	Library "	"
-&:	Lounge "	"
-*:	Hall	"	"
-(:	Study	"	"
+k:	Kitchen Entry Spot
+b:	Ballroom "		"
+c:	Conservatory "  "
+d:	Dining Room "	"
+p:	Billiard Room 	" 
+l:	Library "	"
+g:	Lounge "	"
+h:	Hall	"	"
+s:	Study	"	"
 
 Possibly may put entry spots into 
 the passages in the kitchen/study
