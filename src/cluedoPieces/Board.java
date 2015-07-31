@@ -54,7 +54,7 @@ public class Board {
 	//method to find the room that links to this door
 	EnumSet<Square> doors = EnumSet.of(Square.KITCHEN_DOOR,Square.BALLROOM_DOOR,Square.CONSERVATORY_DOOR,
 			Square.DINING_ROOM_DOOR,Square.BILLIARD_ROOM_DOOR,Square.LIBRARY_DOOR,Square.LOUNGE_DOOR,
-			Square.HALL_DOOR,Square.STUDY_DOOR);
+			Square.HALL_DOOR,Square.STUDY_DOOR,Square.S_1,Square.S_2,Square.S_3,Square.S_4,Square.S_5,Square.S_6);
 	
 	
 	
@@ -308,6 +308,15 @@ public class Board {
 				}
 			}
 		}
-		return null;//DEAD CODE hopefully lol
+		throw new RuntimeException("Invalid layout, player " + player + " start point not found!");
+	}
+	
+	/**
+	 * TODO
+	 * A method that prints the board and the players at given positions on the board.
+	 * @param players
+	 */
+	public void printBoard(List<Player> players){
+		
 	}
 }

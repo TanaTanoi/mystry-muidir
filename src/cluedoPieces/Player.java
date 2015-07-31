@@ -11,7 +11,8 @@ public class Player {
 	Set<Card> hand;
 	private Point pos;
 	private String name;// Players name
-
+	private boolean active = true;
+	
 	public Player(String name){
 		hand = new HashSet<Card>();
 		this.name = name;
@@ -31,7 +32,7 @@ public class Player {
 	 * @return random number from 1 - 6
 	 */
 	public int rollDie(){
-		return (int)(Math.random()*7);
+		return (int)(Math.random()*6+1);
 	}
 	
 	public void answerSuggestion(WeaponCard w, RoomCard r, CharacterCard c){
@@ -52,8 +53,12 @@ public class Player {
 		return name;
 	}
 	
+	public boolean isActive(){
+		return active;
+	}
 	
 	public void setPos(Point p){
 		pos = p;
 	}
+	public Point getPos(){return pos;}
 }
