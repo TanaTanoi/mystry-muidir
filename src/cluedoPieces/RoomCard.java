@@ -1,10 +1,17 @@
 package cluedoPieces;
 
+import cluedoPieces.Room.RoomName;
+
 public class RoomCard implements Card{
 	RoomType type;
 
 	public RoomCard(RoomType type){
 		this.type = type;
+	}
+	public RoomCard(String room){
+		try {
+			type = RoomType.valueOf(room.toUpperCase());
+		}catch(IllegalArgumentException e){}
 	}
 
 	@Override
@@ -16,6 +23,12 @@ public class RoomCard implements Card{
 			return false;
 		}
 
+	}
+
+	@Override
+	public String toString(){
+		if (type != null) return type.toString();
+		else return null;
 	}
 
 	@Override

@@ -4,18 +4,20 @@ import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
+import cluedoPieces.Card.RoomType;
 import cluedoPieces.Room.RoomName;
 
 public class Board {
-	
+
 	private static final String LAYOUT_FILE = "bin/assets/layout.txt";
 	private static final String LEGEND_FILE = "bin/assets/layout_legend.txt";
 	private static final int boardSize = 25;
 	Square[][] board;
-	
+	private Point[] startingPoints;
+	private HashMap<String,Set<Point>> doorMap;
 	//private static final Point[] PLAYER_STARTS = {new Point(9,0), new Point(16,0), new Point(24,6), new Point(23,19), new Point(7,24), new Point(0,17)};
 	//Hard coded start points FIXME no
-	
+
 	/**
 	 * Represents every different kind of square in the game
 	 *
@@ -49,26 +51,27 @@ public class Board {
 		S_5,
 		S_6
 	}
-	
+
 	//This enum set represents a door into a room, for ease of use. Use the roomsDoor
 	//method to find the room that links to this door
 	EnumSet<Square> doors = EnumSet.of(Square.KITCHEN_DOOR,Square.BALLROOM_DOOR,Square.CONSERVATORY_DOOR,
 			Square.DINING_ROOM_DOOR,Square.BILLIARD_ROOM_DOOR,Square.LIBRARY_DOOR,Square.LOUNGE_DOOR,
 			Square.HALL_DOOR,Square.STUDY_DOOR,Square.S_1,Square.S_2,Square.S_3,Square.S_4,Square.S_5,Square.S_6);
-	
-	
-	
+
+
+
 	//This map represents the layout.txt characters to an enum. This must be loaded before use, through loadLegend()
 	Map<String,Square> layoutLegend = new HashMap<String,Square>();
-	
+
 	public Board(){
-		
+
 		board = new Square[boardSize][boardSize];
 		this.loadLegend();
 		this.loadLayout();
+		this.mapDoors();
 	}
-	
-	
+
+
 	/**
 	 * Loads the legend of characters to Square enums and places it into the layoutLegend map.
 	 * The file it takes it from is the layout_legend.txt, as said above.
@@ -89,47 +92,69 @@ public class Board {
 		}catch(ArrayIndexOutOfBoundsException e){
 			throw new RuntimeException("layout_legend.txt may be courrupt!");//TODO as above
 		}
-		
+
 	}
-	
+
 	/**
 	 * Loads the layout into the board array, using the layout.txt file. Assumes that the loadLegend 
 	 * method has been run, such that the legend is ready for use.
 	 */
 	private void loadLayout(){
+		startingPoints = new Point[6];
 		if(layoutLegend.isEmpty())
 			throw new RuntimeException("Layout legend has not been loaded!");//TODO as above-above
 		try{
 			Scanner sc = new Scanner(new File(LAYOUT_FILE));
-			
-			int i, j;//i and j are counters
-			i = j = 0;
+
+			int i = 0;
+			int j = 0;
+
 			while(sc.hasNext()){
 				String line = sc.nextLine();		//read line
 				Scanner sc2 = new Scanner(line);	//analyse
 				sc2.useDelimiter("");
 				while(sc2.hasNext()){
 					String input = sc2.next();			
-					//System.out.print(input);
-					
-					board[i][j] = layoutLegend.get(input);
-					
+					//					System.out.print(input + "|");
+					board[j][i] = layoutLegend.get(input);
+					if (Character.isDigit(input.charAt(0))){
+						int num = Integer.parseInt(input)-1;
+						startingPoints[num] = new Point(j,i);
+					} 
 					//	System.out.print("|"+i+" " +j+  " " + input+"|");
 					i++;
-					
+
 				}
 				i=0;
 				j++;
-				//System.out.println();
 				sc2.close();
 			}
 			sc.close();
 		}catch(IOException e){
 			throw new RuntimeException("Missing layout.txt file!");//TODO find better exception
-			
+
 		}
 	}
-	
+
+	private void mapDoors(){
+		doorMap = new HashMap<String,Set<Point>>();
+		for(RoomType r: RoomType.values()){
+			doorMap.put(r.toString(), new HashSet<Point>());
+		}
+		for (int x = 0; x < board.length; x++){
+			for (int y = 0; y < board.length-1; y++){
+				if(board[x][y].toString().contains("DOOR")){
+					Point p = new Point(y, x);
+					String title = board[x][y].toString();
+					doorMap.get(title.substring(0, title.length()-5)).add(p);
+				}
+			}
+		}
+	}
+
+	public Set<Point> getDoors(String room){
+		return doorMap.get(room);
+	}
 	/**
 	 * This method finds all points that can be reached from a given position 
 	 * and returns the set. Assumes the source point is accessible, else throws error.
@@ -145,7 +170,7 @@ public class Board {
 		reachableRec(toReturn,s.x,s.y,radius);
 		return toReturn.keySet();
 	}
-	
+
 	/**
 	 * Recursive method used by reachablePoints method that adds all nearby, accessible points
 	 * to the set until it runs out of steps or combinations.
@@ -162,15 +187,15 @@ public class Board {
 		Point current = new Point(x,y);
 		if(visited.containsKey(current)&&
 				visited.get(current)>stepsLeft)return;						//base case #4, if current square has gone further than here
-		
+
 		visited.put(current,stepsLeft);										//even if its been visited, overwrite with longer path
 		reachableRec(visited,x+1,y,stepsLeft);
 		reachableRec(visited,x-1,y,stepsLeft);
 		reachableRec(visited,x,y+1,stepsLeft);
 		reachableRec(visited,x,y-1,stepsLeft);
-		
+
 	}
-	
+
 	/**
 	 * Recursive method that finds the rooms accessible from a certain point. Throws exception
 	 * if point is not a valid source point. 
@@ -199,6 +224,7 @@ public class Board {
 		if(stepsLeft<=1)return;												//base case #1, if no steps left
 		stepsLeft--;
 		if(x>=boardSize||x<0||y>=boardSize||y<0)return;						//case case #2, if out of bounds
+		if(board[x][y]==Square.CELLAR) reachable.add(Room.RoomName.CELLAR);
 		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #3, if not valid square 
 		Point current = new Point(x,y);
 		if(visited.containsKey(current)&&
@@ -206,15 +232,17 @@ public class Board {
 		visited.put(current, stepsLeft);
 		
 		if(doors.contains(board[x][y]) && stepsLeft>=1){
-			reachable.add(Room.RoomName.valueOf(this.roomsDoor(board[x][y]).toString()));//may need cleaning, might be better if use of other enum
+			try{
+				reachable.add(Room.RoomName.valueOf(this.roomsDoor(board[x][y]).toString()));//may need cleaning, might be better if use of other enum
+			}catch(Exception e){}
 		}
-		
+
 		reachableRoomsRec(reachable, visited,x+1,y,stepsLeft);
 		reachableRoomsRec(reachable, visited,x-1,y,stepsLeft);
 		reachableRoomsRec(reachable, visited,x,y+1,stepsLeft);
 		reachableRoomsRec(reachable, visited,x,y-1,stepsLeft);
 	}
-	
+
 	/**
 	 * Method that finds the reachable rooms from a given room (as opposed to a given point)
 	 * @param room - Source Room
@@ -222,7 +250,7 @@ public class Board {
 	 * @return - Set containing visit-able rooms
 	 */
 	public Set<Room.RoomName> reachableRooms(RoomName room, int radius){//Possibly may need to change the enum used here
-		
+
 		Square door = doorsRoom(Square.valueOf(room.toString()));	//Finds the associated door   TODO null/invalid check
 		Set<Point> roomsDoors = findEnum(door);						//Find the points to do with that door
 		Set<Room.RoomName> toReturn = new HashSet<Room.RoomName>();
@@ -244,11 +272,11 @@ public class Board {
 			break;
 		}
 		toReturn.remove(room);//Remove self to prevent confusion
-		
+
 		return toReturn;
 	}
-	
-	
+
+
 	/**
 	 * Finds the room associated with a particular door, returning the Square Enum associated with it.
 	 * Assumes the parameter is within the 'doors' 'Square' enum subset
@@ -260,7 +288,7 @@ public class Board {
 		String squareName = door.toString().replaceFirst("_DOOR", "");
 		return Square.valueOf(squareName);//TODO type check this, unless valueOf just errors
 	}
-	
+
 	/**
 	 * Finds the door associated with a particular room, returning the Square Enum associated with it.
 	 * Assumes the parameter is within the 'doors' 'Square' enum subset
@@ -273,7 +301,7 @@ public class Board {
 		if(!doors.contains(result)){throw new IllegalArgumentException("Must enter a room as a parameter!");}
 		return result; //TODO type check this, unless valueOf just errors
 	}
-	
+
 	/**
 	 * Finds all the points in the map that contain the specified Square enum
 	 * @param target
@@ -296,27 +324,62 @@ public class Board {
 	 * @param player - Index of player
 	 * @return - Starting point for that player
 	 */
-	public Point findPlayerStart(int player){
-		
-		if(player>6||player<1)throw new IllegalArgumentException("Only 1 to 6 players!");
-		
-		Square toFind = Square.valueOf("S_"+player);
-		for(int x = 0; x < boardSize;x++){
-			for(int y = 0; y <boardSize;y++){
-				if(board[x][y].equals(toFind)){
-					return new Point(x,y);
-				}
-			}
-		}
-		throw new RuntimeException("Invalid layout, player " + player + " start point not found!");
-	}
-	
+	//	public Point findPlayerStart(int player){
+	//
+	//		if(player>6||player<1)throw new IllegalArgumentException("Only 1 to 6 players!");
+	//
+	//		Square toFind = Square.valueOf("S_"+player);
+	//		for(int x = 0; x < boardSize;x++){
+	//			for(int y = 0; y <boardSize;y++){
+	//				if(board[x][y].equals(toFind)){
+	//					return new Point(x,y);
+	//				}
+	//			}
+	//		}
+	//		throw new RuntimeException("Invalid layout, player " + player + " start point not found!");
+	//	}
+
 	/**
 	 * TODO
 	 * A method that prints the board and the players at given positions on the board.
 	 * @param players
 	 */
 	public void printBoard(List<Player> players){
-		
+		char[][] out = new char[board.length][board.length-1];
+		for (int x = 0; x < board.length; x++){
+			for (int y = 0; y < board.length-1; y++){
+				if (board[x][y].toString().equals("OPEN")){							//if open
+					out[x][y] = '_';
+				}
+				else if (doors.contains(board[x][y])){								//if door
+					out[x][y] = board[x][y].toString().toLowerCase().charAt(0);
+				}else{																//if room or NA
+					out[x][y] = board[x][y].toString().charAt(0);
+				}
+			}
+		}
+		int i = 1;
+		for(Player p: players){
+			if (p.getCurrentRoom() == null){
+				out[p.getPos().x][p.getPos().y] = Character.forDigit(i, 10);
+			}
+			i++;
+		}
+		System.out.print("  |");
+		for(int a = 65; a < 65 + board.length-1; a++){//loop that prints letters along the top of the board
+			System.out.print((char)a+"|");
+		}
+		System.out.println("");
+		for (int x = 0; x < board.length; x++){//board printing loop
+			System.out.printf("%2d|",x+1);//prints numbers alond the bottom of the board
+			for (int y = 0; y < board.length-1; y++){
+				System.out.print(out[x][y]+"|");
+			}
+			System.out.println("");
+		}
+	}
+
+	public Point getStartingPoint(int point){
+		return startingPoints[point-1];
 	}
 }

@@ -1,11 +1,18 @@
 package cluedoPieces;
 
+import cluedoPieces.Card.WeaponType;
+
 public class CharacterCard implements Card{
 	Person type;
 	
 	public CharacterCard(Person type){
 		this.type = type;
-		
+	}
+	
+	public CharacterCard(String person){
+		try {
+			type = Person.valueOf(person.toUpperCase());
+		}catch(IllegalArgumentException e){}
 	}
 	
 	@Override
@@ -17,6 +24,12 @@ public class CharacterCard implements Card{
 			return false;
 		}
 		
+	}
+	
+	@Override
+	public String toString(){
+		if (type != null) return type.toString();
+		else return null;
 	}
 	
 	@Override

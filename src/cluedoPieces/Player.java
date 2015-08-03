@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.Set;
 import java.util.HashSet;
 
+import cluedoPieces.Room.RoomName;
 import cluedoPieces.Card.*;
 
 public class Player {
@@ -12,7 +13,7 @@ public class Player {
 	private Point pos;
 	private String name;// Players name
 	private boolean active = true;
-	
+	private RoomName room;
 	public Player(String name){
 		hand = new HashSet<Card>();
 		this.name = name;
@@ -28,25 +29,23 @@ public class Player {
 	}
 
 	/**
-	 * Takes place of dice roll - generates random number from 1-6
-	 * @return random number from 1 - 6
+	 * Player receives a suggestion of three cards, and responds if they are holding any of the cards
+	 * @param w Suggested weapon for murder
+	 * @param r Suggested room of murder
+	 * @param c Suggested victim
 	 */
-	public int rollDie(){
-		return (int)(Math.random()*6+1);
-	}
-	
 	public void answerSuggestion(WeaponCard w, RoomCard r, CharacterCard c){
 		if (hand.contains(w))System.out.println("Player " + name + " cannot refute seeing the " + w + "!");
 		if (hand.contains(r))System.out.println("Player " + name + " cannot refute having checked the " + r);
 		if (hand.contains(c))System.out.println("Player " + name + " cannot refute having been with " + c + " at the time of death...");
 	}
 	
-	public boolean makeAccusation(){
-		return false;
+	public void setRoom(RoomName r){
+		room = r;
 	}
-
-	public RoomType getCurrentRoom(){
-		return null;
+	
+	public RoomName getCurrentRoom(){
+		return room;
 	}
 	
 	public String getName(){
@@ -56,7 +55,9 @@ public class Player {
 	public boolean isActive(){
 		return active;
 	}
-	
+	public void setActive(boolean active){
+		this.active = active;
+	}	
 	public void setPos(Point p){
 		pos = p;
 	}
