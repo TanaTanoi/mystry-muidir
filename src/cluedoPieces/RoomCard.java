@@ -1,6 +1,5 @@
 package cluedoPieces;
 
-import cluedoPieces.Room.RoomName;
 
 public class RoomCard implements Card{
 	RoomType type;

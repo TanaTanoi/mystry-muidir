@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.HashSet;
 
 import cluedoPieces.Room.RoomName;
-import cluedoPieces.Card.*;
 
 public class Player {
 
@@ -35,9 +34,9 @@ public class Player {
 	 * @param c Suggested victim
 	 */
 	public void answerSuggestion(WeaponCard w, RoomCard r, CharacterCard c){
-		if (hand.contains(w))System.out.println("Player " + name + " cannot refute seeing the " + w + "!");
-		if (hand.contains(r))System.out.println("Player " + name + " cannot refute having checked the " + r);
-		if (hand.contains(c))System.out.println("Player " + name + " cannot refute having been with " + c + " at the time of death...");
+		if (hand.contains(w)){System.out.println("Player " + name + " cannot refute seeing the " + w + "!");return;}
+		if (hand.contains(r)){System.out.println("Player " + name + " cannot refute having checked the " + r);return;}
+		if (hand.contains(c)){System.out.println("Player " + name + " cannot refute having been with " + c + " at the time of death...");return;}
 	}
 	
 	public void setRoom(RoomName r){

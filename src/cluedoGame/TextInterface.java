@@ -3,7 +3,6 @@ package cluedoGame;
 import java.awt.Point;
 import java.io.*;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 /**
  * This interface completely deals with the user interaction, both input and output
@@ -19,7 +18,7 @@ public class TextInterface {
 	
 	private static final String POINT_PATT ="\\d{1,2}(\\s*,\\s*|\\s*)\\d{1,2}";
 	
-	private static final int 	MAX_INPUT_BUFFER = 10;	//max amount of characters input-able through system.in
+	private static final int 	MAX_INPUT_BUFFER = 20;	//max amount of characters input-able through system.in
 	/**
 	 * Displays the given message and then requests an input (returned
 	 * in the form of a string) from the user.

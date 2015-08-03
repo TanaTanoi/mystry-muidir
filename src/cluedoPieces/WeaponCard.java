@@ -1,6 +1,5 @@
 package cluedoPieces;
 
-import cluedoPieces.Card.WeaponType;
 
 public class WeaponCard implements Card {
 	
