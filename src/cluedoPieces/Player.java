@@ -18,7 +18,7 @@ public class Player {
 		this.name = name;
 	}
 
-	
+
 	/**
 	 * Method to recieve a card from the deal
 	 * @param c Card to be added to hand
@@ -28,35 +28,60 @@ public class Player {
 	}
 
 	/**
-	 * Player receives a suggestion of three cards, and responds if they are holding any of the cards
+	 * Returns the cards the player has in a set
+	 * @return
+	 */
+	public Set<Card> getHand(){
+		return hand;
+	}
+	/**
+	 * Player receives a suggestion of three cards, and returns the first card that has been suggested,
+	 * starting with the Weapon card, Character, Room
 	 * @param w Suggested weapon for murder
 	 * @param r Suggested room of murder
 	 * @param c Suggested victim
+	 * @return - w, r, or c cards if they have it, else null
 	 */
-	public void answerSuggestion(WeaponCard w, RoomCard r, CharacterCard c){
-		if (hand.contains(w)){System.out.println("Player " + name + " cannot refute seeing the " + w + "!");return;}
-		if (hand.contains(r)){System.out.println("Player " + name + " cannot refute having checked the " + r);return;}
-		if (hand.contains(c)){System.out.println("Player " + name + " cannot refute having been with " + c + " at the time of death...");return;}
+	public Card answerSuggestion(WeaponCard w, RoomCard r, CharacterCard c){
+		if(hand.contains(w)){
+			return w;
+		}else if(hand.contains(c)){
+			return c;
+		}else if(hand.contains(r)){
+			return r;
+		}
+		return null;
 	}
-	
+
 	public void setRoom(RoomName r){
 		room = r;
 	}
-	
+
 	public RoomName getCurrentRoom(){
 		return room;
 	}
-	
+
 	public String getName(){
 		return name;
 	}
-	
+	/**
+	 * Returns if this player is still in the game(hasn't made a false accusation)
+	 * @return
+	 */
 	public boolean isActive(){
 		return active;
 	}
-	public void setActive(boolean active){
-		this.active = active;
-	}	
+	/**
+	 * Sets this player to inactive, when a false accusation is made
+	 */
+	public void makeInactive(){
+		this.active = false;
+	}
+	/**
+	 * Set the player's position on the board.
+	 * Assumes this point is a valid point.
+	 * @param p
+	 */
 	public void setPos(Point p){
 		pos = p;
 	}

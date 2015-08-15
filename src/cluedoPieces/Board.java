@@ -15,15 +15,13 @@ public class Board {
 	Square[][] board;
 	private Point[] startingPoints;
 	private HashMap<String,Set<Point>> doorMap;
-	//private static final Point[] PLAYER_STARTS = {new Point(9,0), new Point(16,0), new Point(24,6), new Point(23,19), new Point(7,24), new Point(0,17)};
-	//Hard coded start points FIXME no
 
 	/**
 	 * Represents every different kind of square in the game
 	 *
 	 */
 	enum Square{
-		NA,		//Inaccessible 
+		NA,		//Inaccessible
 		OPEN,	//open area
 		KITCHEN,
 		KITCHEN_DOOR,
@@ -96,7 +94,7 @@ public class Board {
 	}
 
 	/**
-	 * Loads the layout into the board array, using the layout.txt file. Assumes that the loadLegend 
+	 * Loads the layout into the board array, using the layout.txt file. Assumes that the loadLegend
 	 * method has been run, such that the legend is ready for use.
 	 */
 	private void loadLayout(){
@@ -114,13 +112,13 @@ public class Board {
 				Scanner sc2 = new Scanner(line);	//analyse
 				sc2.useDelimiter("");
 				while(sc2.hasNext()){
-					String input = sc2.next();			
+					String input = sc2.next();
 					//					System.out.print(input + "|");
 					board[j][i] = layoutLegend.get(input);
 					if (Character.isDigit(input.charAt(0))){
 						int num = Integer.parseInt(input)-1;
 						startingPoints[num] = new Point(j,i);
-					} 
+					}
 					//	System.out.print("|"+i+" " +j+  " " + input+"|");
 					i++;
 
@@ -156,7 +154,7 @@ public class Board {
 		return doorMap.get(room);
 	}
 	/**
-	 * This method finds all points that can be reached from a given position 
+	 * This method finds all points that can be reached from a given position
 	 * and returns the set. Assumes the source point is accessible, else throws error.
 	 * @param s - The source point (e.g. where the player is)
 	 * @param radius - Amount of steps away from the source that can be moved too
@@ -183,7 +181,7 @@ public class Board {
 		if(stepsLeft<=0)return;												//base case #1, if no steps left
 		stepsLeft--;
 		if(x>=boardSize||x<0||y>=boardSize||y<0)return;						//case case #2, if out of bounds
-		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #3, if not valid square 
+		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #3, if not valid square
 		Point current = new Point(x,y);
 		if(visited.containsKey(current)&&
 				visited.get(current)>stepsLeft)return;						//base case #4, if current square has gone further than here
@@ -198,7 +196,7 @@ public class Board {
 
 	/**
 	 * Recursive method that finds the rooms accessible from a certain point. Throws exception
-	 * if point is not a valid source point. 
+	 * if point is not a valid source point.
 	 * @param s - Source point (e.g. where the player is)
 	 * @param radius - Amount of steps the player can take
 	 * @return - A set of RoomName enums that represent available rooms.
@@ -212,7 +210,7 @@ public class Board {
 		return toReturn;
 	}
 	/**
-	 * Recursive method used for reachableRooms that adds to the set, the rooms reachable from the 
+	 * Recursive method used for reachableRooms that adds to the set, the rooms reachable from the
 	 * given point
 	 * @param reachable - Reachable rooms set
 	 * @param visited - Map of visited points to the amount of steps left at that point
@@ -225,12 +223,12 @@ public class Board {
 		stepsLeft--;
 		if(x>=boardSize||x<0||y>=boardSize||y<0)return;						//case case #2, if out of bounds
 		if(board[x][y]==Square.CELLAR) reachable.add(Room.RoomName.CELLAR);
-		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #3, if not valid square 
+		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #3, if not valid square
 		Point current = new Point(x,y);
 		if(visited.containsKey(current)&&
 				visited.get(current)>stepsLeft)return;						//base case #4, if current square has gone further than here
 		visited.put(current, stepsLeft);
-		
+
 		if(doors.contains(board[x][y]) && stepsLeft>=1){
 			try{
 				reachable.add(Room.RoomName.valueOf(this.roomsDoor(board[x][y]).toString()));//may need cleaning, might be better if use of other enum
@@ -320,7 +318,7 @@ public class Board {
 	}
 	/**
 	 * Finds the starting point of players based on their number (1 - 6)
-	 * 
+	 *
 	 * @param player - Index of player
 	 * @return - Starting point for that player
 	 */
@@ -378,7 +376,12 @@ public class Board {
 			System.out.println("");
 		}
 	}
-
+	/**
+	 * Returns the starting point of a given player, indicated by their number.
+	 * Starts at 0, s.t. player 1 is zero.
+	 * @param point
+	 * @return
+	 */
 	public Point getStartingPoint(int point){
 		return startingPoints[point-1];
 	}

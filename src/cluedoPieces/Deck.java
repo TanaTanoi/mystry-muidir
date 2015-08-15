@@ -8,7 +8,7 @@ public class Deck {
 	private List<Card> roomPile;		//holds room cards
 	private List<Card> weaponPile;		//holds weapon cards
 	private List<Card> characterPile;	//holds character cards
-	private Card[] murderCards;			//holds the three cards that solve the murder, 
+	private Card[] murderCards;			//holds the three cards that solve the murder,
 										//1: Room, 2: Weapon, 3: Character
 	public Deck(List<Player> players){
 		roomPile= new ArrayList<Card>();
@@ -19,8 +19,8 @@ public class Deck {
 		selectMurderCards();
 		distributeCards(players);
 	}
-	
-	
+
+
 	/**
 	 * Selects the three cards that solve the murder, where position one is for the room,
 	 * two; the weapon and three; the character.
@@ -29,17 +29,17 @@ public class Deck {
 	 */
 	private void selectMurderCards(){
 		if(!roomPile.isEmpty()&&!weaponPile.isEmpty()&&!characterPile.isEmpty()){
-			murderCards[0] = roomPile.remove((int)Math.random()*roomPile.size());
-			murderCards[1] = weaponPile.remove((int)Math.random()*weaponPile.size());
-			murderCards[2] = characterPile.remove((int)Math.random()*characterPile.size());
+			murderCards[0] = roomPile.remove((int)(Math.random()*roomPile.size()));
+			murderCards[1] = weaponPile.remove((int)(Math.random()*weaponPile.size()));
+			murderCards[2] = characterPile.remove((int)(Math.random()*characterPile.size()));
 		}else{
 			throw new IllegalArgumentException("Requires a deck to be built before use!");
 		}
 	}
-	
+
 	/**
-	 * Compares an array of three cards to the murder cards. Returns true if the three cards 
-	 * are of the same type (As depicted in the Card implementation equals methods) else 
+	 * Compares an array of three cards to the murder cards. Returns true if the three cards
+	 * are of the same type (As depicted in the Card implementation equals methods) else
 	 * returns false.
 	 * If array is not suited, throws IllegalArgumentException.
 	 * @param proposal
@@ -59,11 +59,11 @@ public class Deck {
 		}
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Distributes cards to the list of players provided.
-	 * 
+	 *
 	 * @param players
 	 */
 	private void distributeCards(List<Player> players){
@@ -95,5 +95,5 @@ public class Deck {
 			roomPile.add(new RoomCard(r));
 		}
 	}
-	
+
 }
