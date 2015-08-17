@@ -3,6 +3,7 @@ package cluedoGame;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import cluedoPieces.*;
@@ -10,6 +11,10 @@ import cluedoPieces.Room.RoomName;
 import cluedoPieces.Card.Person;
 public class CluedoGame {
 	private TextInterface ui;
+	
+	private Control control;
+	
+	
 	private Board board;
 	private Deck deck;
 	private ArrayList<Player> players;
@@ -34,53 +39,37 @@ public class CluedoGame {
 	 */
 	private void startGame() {
 		board = new Board();
-		ui = new TextInterface();
+		//ui = new TextInterface();
+		control = new Control();
 		players = new ArrayList<Player>();
 		int playerNum = 0;
 		String input = "";
 		// Get number of players
-		while (!input.matches("[2-6]")) {// while number is not digit between 2
-			// and 6
-			input = ui.requestInput("How many players? Minimum 2, Maximum 6");
-		}
-		playerNum = Integer.parseInt(input);
+		playerNum = control.getTotalPlayers();
 		remainingPlayers = playerNum;
 		System.out.println(playerNum);
-		// Assign names to each player, give initial position, and add them
+		//Create every player and assign their positions
+		List<String> names = new ArrayList<String>();
 		for (int i = 1; i <= playerNum; i++) {
-			input = "";						// clear input buffer
-			while (input.length() <= 1) {	// needs more than 1 char
-				input = ui.requestInput("Enter player " + (i) + "s name");
-			}
-			Player newP = new Player(input);
+			String name = control.requestPlayerName(i);
+			names.add(name);
+			Player newP = new Player(name);
 			newP.setPos(board.getStartingPoint(i));
-			// positions. Plus one
-			// because it starts at
 			// 1 to 6
 			players.add(newP);
 		}
-		ui.print("Tonight we have..");
-		int i = 0;
-		for (Person p : Card.Person.values()) {// FIXME We may want to use
-			// proper names as opposed to
-			// the enums, maybe a hard coded
-			// array in the Player class?
-			ui.print(players.get(i).getName() + " as..." + p.toString());
-			i++;
-			if (i >= playerNum) {
-				break;
-			}// stop once we have met max players
-		}
-
+		//Display players on GUI
+		control.displayPlayers(names);
+		//Initialize deck with players
 		deck = new Deck(players);
-		i = 0;// redeclare i for use with this loop
+		int i = 0;// redeclare i for use with this loop
 		Player p = players.get(i);
 
 		// Main loop
 		do{
-			board.printBoard(players);
+			//board.printBoard(players);
 			//System.out.println(makeAccusation());
-			p = players.get(i++);
+			p = players.get(++i);
 			if (i == players.size()) {
 				i = 0;
 			}
@@ -98,7 +87,7 @@ public class CluedoGame {
 	 * @param p -Players turn
 	 * @return - False if game over
 	 */
-	private boolean playerTurn(Player p){
+	private boolean playerTurn2(Player p){
 		if (!p.isActive()) return false;
 		ui.print(p.getName() + "'s turn!");
 		int roll = rollDie();
@@ -176,8 +165,27 @@ public class CluedoGame {
 		}
 	}
 
-
-
+	private boolean playerTurn(Player p){
+		//Display information
+		
+		control.displayPlayerInformation(p);
+		
+		//Roll die and calculate possible locations to move
+		int playerRoll = rollDie();
+		Set<Point> reachablePoints = new HashSet<Point>();
+		Set<Room.RoomName> reachableRooms = new HashSet<Room.RoomName>();
+		if(p.getCurrentRoom()==null){		//if player is not in a room, use pos
+			reachablePoints	.addAll(board.reachablePoints(p.getPos(), playerRoll));
+			reachableRooms	.addAll(board.reachableRooms(p.getPos(), playerRoll));
+		}else{								//if a player is in a room, use room
+			reachablePoints	.addAll(board.reachablePoints(p.getCurrentRoom(), playerRoll));
+			reachableRooms	.addAll(board.reachableRooms(p.getCurrentRoom(), playerRoll));
+		}
+		//TODO not done yet
+		return false;
+	}
+	
+	
 	/**
 	 *
 	 * @return true if the accusation is correct (meaning the player will win the game)

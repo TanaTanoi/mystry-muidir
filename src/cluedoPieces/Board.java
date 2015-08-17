@@ -149,7 +149,12 @@ public class Board {
 			}
 		}
 	}
-
+	
+	/**
+	 * Gets the points associated with a given room string
+	 * @param room
+	 * @return
+	 */
 	public Set<Point> getDoors(String room){
 		return doorMap.get(room);
 	}
@@ -168,7 +173,22 @@ public class Board {
 		reachableRec(toReturn,s.x,s.y,radius);
 		return toReturn.keySet();
 	}
-
+	
+	/**
+	 * This method finds all reachable points from a given room ( as opposed to a given
+	 * point) and returns the set of points.
+	 * @param room  -Room to find reachable points to
+	 * @param radius - Point search radius
+	 * @return
+	 */
+	public Set<Point> reachablePoints(RoomName room, int radius){
+		Map<Point, Integer> toReturn = new HashMap<Point,Integer>();
+		for(Point p:getDoors(room.toString())){
+			reachableRec(toReturn,p.x,p.y,radius);
+		}
+		return toReturn.keySet();
+	}
+	
 	/**
 	 * Recursive method used by reachablePoints method that adds all nearby, accessible points
 	 * to the set until it runs out of steps or combinations.
@@ -378,7 +398,7 @@ public class Board {
 	}
 	/**
 	 * Returns the starting point of a given player, indicated by their number.
-	 * Starts at 0, s.t. player 1 is zero.
+	 * Starts at 1, s.t. player 1 is 1.
 	 * @param point
 	 * @return
 	 */
