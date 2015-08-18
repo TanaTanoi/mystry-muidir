@@ -39,11 +39,9 @@ public class CluedoGame {
 	 */
 	private void startGame() {
 		board = new Board();
-		//ui = new TextInterface();
-		control = new Control();
+		control = new Control(board);
 		players = new ArrayList<Player>();
 		int playerNum = 0;
-		String input = "";
 		// Get number of players
 		playerNum = control.getTotalPlayers();
 		remainingPlayers = playerNum;
@@ -55,7 +53,6 @@ public class CluedoGame {
 			names.add(name);
 			Player newP = new Player(name);
 			newP.setPos(board.getStartingPoint(i));
-			// 1 to 6
 			players.add(newP);
 		}
 		//Display players on GUI
@@ -73,11 +70,11 @@ public class CluedoGame {
 			if (i == players.size()) {
 				i = 0;
 			}
-		}while (!playerTurn(p) && remainingPlayers != 0);
+		}while (!playerTurn(p) && remainingPlayers > 1 );
 	}
 
 	/**
-	 * This method is the main game loop, that returns true when the game is
+	 *[OBSOLETE] This method is the main game loop, that returns true when the game is
 	 * over. Main sequence: -Ask player to roll die -Tell player options -Accept
 	 * input -if movement, do movement --if movement lands in room, ask
 	 * suggestion --ask next players to refute, do refute cycle -if in cellar
@@ -145,7 +142,7 @@ public class CluedoGame {
 							return false;
 						}else{
 							if (!makeAccusation()){
-								p.makeInactive(); //Player made a false accusation, they have lost the game and are thus inactive
+								p.setInactive(); //Player made a false accusation, they have lost the game and are thus inactive
 								remainingPlayers--; //Reduces remaining players
 								ui.print(p.getName()+ " answered incorrectly, and have been removed from the game.");
 								return false;
@@ -167,23 +164,74 @@ public class CluedoGame {
 
 	private boolean playerTurn(Player p){
 		//Display information
-		
 		control.displayPlayerInformation(p);
-		
 		//Roll die and calculate possible locations to move
 		int playerRoll = rollDie();
 		Set<Point> reachablePoints = new HashSet<Point>();
 		Set<Room.RoomName> reachableRooms = new HashSet<Room.RoomName>();
-		if(p.getCurrentRoom()==null){		//if player is not in a room, use pos
+		if(p.getCurrentRoom()==null){		//if player is not in a room, use position
 			reachablePoints	.addAll(board.reachablePoints(p.getPos(), playerRoll));
 			reachableRooms	.addAll(board.reachableRooms(p.getPos(), playerRoll));
 		}else{								//if a player is in a room, use room
 			reachablePoints	.addAll(board.reachablePoints(p.getCurrentRoom(), playerRoll));
 			reachableRooms	.addAll(board.reachableRooms(p.getCurrentRoom(), playerRoll));
 		}
-		//TODO not done yet
-		return false;
+		//Pass movements into the view and await a selection from the user
+		Point playerSelection = control.displayPlayerMove(reachablePoints, reachableRooms);
+		if(playerSelection!=null){//If the player made a point selection, move there
+			RoomName room = board.getRoom(playerSelection);	
+			p.setPos(playerSelection);
+			p.setRoom(room);								//Room is null if they didn't select a room
+		}					
+		//then make suggestion/accusation
+		if(p.getCurrentRoom()==RoomName.CELLAR){
+			return makeAccusation(p);
+		}else{							//make suggestion
+			makeSuggestion(p);
+			return true;
+		}
 	}
+	
+	
+	/**
+	 * Makes a suggestion using the current player.
+	 * @param p
+	 */
+	private void makeSuggestion(Player p){
+		RoomCard room= new RoomCard(p.getCurrentRoom());
+		WeaponCard weapon = control.requestWeaponCard();
+		CharacterCard ch = control.requestCharacterCard();
+		for(Player player: players){
+			if(p==player){continue;}
+			Card refutedCard = player.answerSuggestion(weapon,room,ch);
+			if(refutedCard!=null){
+				control.displayRefutedCard(player, refutedCard);
+				break;
+			}
+		}
+
+	}
+	
+	/**
+	 * Makes an accusation using the current player. 
+	 * @param p 
+	 * @return - False if the proposal is correct, true if not, as to follow the game loop rules
+	 */
+	private boolean makeAccusation(Player p){
+		//Form proposal
+		RoomCard room= control.requestRoomCard();
+		WeaponCard weapon = control.requestWeaponCard();
+		CharacterCard ch = control.requestCharacterCard();
+		Card[] accusation = {room,weapon,ch};
+		if(deck.compareMurderCards(accusation)){	//if proposal is correct
+			return false;
+		}else{										//if they are wrong
+			remainingPlayers--;
+			p.setInactive();
+		}
+		return true;
+	}
+	
 	
 	
 	/**
@@ -191,7 +239,7 @@ public class CluedoGame {
 	 * @return true if the accusation is correct (meaning the player will win the game)
 	 * or false if incorrect (player loses game and is eliminated
 	 */
-	private boolean makeAccusation() {
+	private boolean makeAccusation2() {
 		Card[] cards = new Card[3];
 
 		//loops to load possible answers for user input
@@ -227,7 +275,7 @@ public class CluedoGame {
 	 * cards and states if a suggestion is true.
 	 * @param r Room the player just entered
 	 */
-	private void makeSuggestion(RoomName r, Player p) {
+	private void makeSuggestion2(RoomName r, Player p) {
 		RoomCard room = new RoomCard(Card.RoomType.valueOf(r.toString()));
 		WeaponCard weapon;
 		CharacterCard ch;
@@ -330,7 +378,7 @@ public class CluedoGame {
 							return false;
 						}else{
 							if (!makeAccusation()){
-								p.makeInactive(); //Player made a false accusation, they have lost the game and are thus inactive
+								p.setInactive(); //Player made a false accusation, they have lost the game and are thus inactive
 								remainingPlayers--; //Reduces remaining players
 								ui.print(p.getName()+ " answered incorrectly, and have been removed from the game.");
 								return false;

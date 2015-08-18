@@ -56,7 +56,12 @@ public class Player {
 	public void setRoom(RoomName r){
 		room = r;
 	}
-
+	
+	/**
+	 * Returns a Room.RoomName enum signifying what room
+	 * the current player is in.
+	 * @return
+	 */
 	public RoomName getCurrentRoom(){
 		return room;
 	}
@@ -74,7 +79,7 @@ public class Player {
 	/**
 	 * Sets this player to inactive, when a false accusation is made
 	 */
-	public void makeInactive(){
+	public void setInactive(){
 		this.active = false;
 	}
 	/**

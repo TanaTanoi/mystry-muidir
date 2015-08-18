@@ -7,6 +7,9 @@ public class RoomCard implements Card{
 	public RoomCard(RoomType type){
 		this.type = type;
 	}
+	public RoomCard(Room.RoomName type){
+		this.type = RoomType.valueOf(type.toString());
+	}
 	public RoomCard(String room){
 		try {
 			type = RoomType.valueOf(room.toUpperCase());

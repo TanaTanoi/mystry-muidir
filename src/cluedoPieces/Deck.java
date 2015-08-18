@@ -42,8 +42,8 @@ public class Deck {
 	 * are of the same type (As depicted in the Card implementation equals methods) else
 	 * returns false.
 	 * If array is not suited, throws IllegalArgumentException.
-	 * @param proposal
-	 * @return
+	 * @param proposal - 3 Cards (room, weapon, character) to propose
+	 * @return - True if proposal is correct
 	 */
 	public boolean compareMurderCards(Card[] proposal){
 		if(proposal.length!=3||

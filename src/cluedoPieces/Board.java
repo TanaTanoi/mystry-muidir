@@ -405,4 +405,19 @@ public class Board {
 	public Point getStartingPoint(int point){
 		return startingPoints[point-1];
 	}
+	/**
+	 * Method to tell if a point is inside a room or not. Returns null if not
+	 * on a room
+	 * @param p
+	 * @return - Room at this point, null if not a room
+	 */
+	public Room.RoomName getRoom(Point p){
+		if(p.x>25||p.y>25||p.x<0||p.y<0)throw new IllegalArgumentException("Point must be within board area");
+		Square tile = board[p.x][p.y];
+		if(!(doors.contains(tile)||tile==Square.OPEN)){	//if room
+			return Room.RoomName.valueOf(board[p.x][p.y].toString());
+		}else{											//if not room	
+			return null;
+		}
+	}
 }

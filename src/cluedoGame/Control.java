@@ -4,8 +4,13 @@ import java.awt.Point;
 import java.util.List;
 import java.util.Set;
 
+import cluedoPieces.Board;
+import cluedoPieces.Card;
+import cluedoPieces.CharacterCard;
 import cluedoPieces.Player;
 import cluedoPieces.Room;
+import cluedoPieces.RoomCard;
+import cluedoPieces.WeaponCard;
 
 /**
  * This class is the bridge between the CluedoGame (model) and the GUI (view).
@@ -16,7 +21,15 @@ import cluedoPieces.Room;
  */
 public class Control {
 
+	Player currentPlayer;
 	
+	/**
+	 * Passes in the board to allow the frame to construct a background image
+	 * @param board
+	 */
+	public Control(Board board){
+		
+	}
 	
 	/**
 	 * Asks the user for the number of players and 
@@ -27,7 +40,34 @@ public class Control {
 		//TODO actual content
 		return 0;
 	}
+	/**
+	 * Asks the current player for a weapon card, for use with accusations and 
+	 * suggestions.
+	 * @return
+	 */
+	public WeaponCard requestWeaponCard(){
+		
+		return null;
+	}
 	
+	/**
+	 * Asks the current player for a character card, for use with accusations
+	 * and suggestions.
+	 * @return
+	 */
+	public CharacterCard requestCharacterCard(){
+		
+		return null;
+	}
+	
+	/**
+	 * Asks the current player for a room card, for use with accusations.
+	 * @return
+	 */
+	public RoomCard requestRoomCard(){
+		
+		return null;
+	}
 	/**
 	 * Asks the user n (which corresponds to a character portrait) 
 	 * for their player name and returns the string.
@@ -74,5 +114,16 @@ public class Control {
 		
 		
 		return null;
+	}
+	
+	/**
+	 * Displays the refuted card to the current viewer from the given player.
+	 * TODO? maybe also wait for confirmation before returning?
+	 * @param p
+	 * @param c
+	 */
+	public void displayRefutedCard(Player p, Card c){
+		
+		
 	}
 }
