@@ -124,6 +124,13 @@ public class Control {
 	 */
 	public void displayRefutedCard(Player p, Card c){
 		
-		
+		//TODO
+	}
+	/**
+	 * Displays the winning player
+	 * @param p
+	 */
+	public void displayWinner(Player p){
+		//TODO
 	}
 }
