@@ -22,7 +22,7 @@ import cluedoPieces.WeaponCard;
 public class Control {
 
 	Player currentPlayer;
-	
+	List<Player> players;
 	/**
 	 * Passes in the board to allow the frame to construct a background image
 	 * @param board
@@ -76,7 +76,7 @@ public class Control {
 	 */
 	public String requestPlayerName(int n){
 		//TODO
-		return "name";
+		return "dave";
 	}
 	
 	/**
@@ -84,8 +84,9 @@ public class Control {
 	 * and then continues once finished.
 	 * @param names
 	 */
-	public void displayPlayers(List<String> names){
+	public void displayPlayers(List<Player> players){
 		//TODO
+		this.players = players;
 		
 	}
 	/**

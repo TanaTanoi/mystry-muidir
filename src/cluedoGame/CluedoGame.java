@@ -42,18 +42,17 @@ public class CluedoGame {
 		remainingPlayers = playerNum;
 		System.out.println(playerNum);
 		//Create every player and assign their positions
-		List<String> names = new ArrayList<String>();
 		for (int i = 1; i <= playerNum; i++) {
 			String name = control.requestPlayerName(i);
-			names.add(name);
 			Player newP = new Player(name);
 			newP.setPos(board.getStartingPoint(i));
 			players.add(newP);
 		}
 		//Display players on GUI
-		control.displayPlayers(names);
+		control.displayPlayers(players);
 		//Initialize deck with players
 		deck = new Deck(players);
+		
 		int i = 0;// redeclare i for use with this loop
 		Player p = players.get(i);
 
