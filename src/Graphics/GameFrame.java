@@ -1,12 +1,16 @@
 package Graphics;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -21,9 +25,9 @@ import cluedoPieces.Board;
 public class GameFrame extends JFrame implements MouseListener, MouseMotionListener{
 	private static final int BOARD_TOP = 61;
 	private static final int BOARD_LEFT= 15;
-	
+
 	public Point clickedP = null;
-	
+
 	GameCanvas canvas;
 	Board board;
 	public GameFrame(Control control){
@@ -39,22 +43,40 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		setResizable(true);
 		setVisible(true);
 		addButtons();
-	}	
-	
-	
+	}
+
+
 	private void addMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu gameMenu = new JMenu("Game");
 		menuBar.add(gameMenu);
-		JMenuItem newGameItem = new JMenuItem("N|New Game");
+		JMenuItem newGameItem = new JMenuItem(new AbstractAction("N|New Game") {
+			public void actionPerformed(ActionEvent e){
+				//TODO open players window
+				new PlayerWindow();
+			}
+		});
 		gameMenu.add(newGameItem);
 		this.setJMenuBar(menuBar);
 	}
-	
+
 	private void addButtons(){
-		JPanel buttonPanel = new JPanel();
-		JButton b= new JButton("Button");
-		buttonPanel.add(b);
+		Color panelColor = new Color(0,30,0);
+		JPanel buttonPanel = new JPanel(new GridLayout(5, 1));//so the buttons will all align vertically
+		JButton roll= new JButton(new AbstractAction("Roll Die") {
+			public void actionPerformed(ActionEvent e){
+				//TODO roll random number
+				System.out.println("dicks");
+			}
+		});
+		JButton endTurn= new JButton(new AbstractAction("End Turn") {
+			public void actionPerformed(ActionEvent e){
+				//TODO Change to next player
+			}
+		});
+		buttonPanel.add(roll);
+		buttonPanel.add(endTurn);
+		buttonPanel.setBackground(panelColor);
 		this.add(buttonPanel, BorderLayout.EAST);
 	}
 
@@ -69,8 +91,8 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	public void mouseMoved(MouseEvent e) {
 		//TODO write code for detecting what is being hovered over
 	}
-	
-	
+
+
 	/**
 	 * takes a mouse position and finds the point on the board that the mouse is over
 	 * @param x an x position on the frame
@@ -84,8 +106,8 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		return new Point(xSquare,ySquare);
 	}
 
-	
-	
+
+
 	/*
 	 * UNUSED LISTENER METHODS
 	 */
