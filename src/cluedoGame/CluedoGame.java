@@ -11,7 +11,7 @@ import cluedoPieces.Room.RoomName;
 import cluedoPieces.Card.Person;
 public class CluedoGame {
 	private Control control;
-	private GameFrame frame;
+	//private GameFrame frame;
 	
 	private Board board;
 	private Deck deck;
@@ -36,7 +36,7 @@ public class CluedoGame {
 	private void startGame() {
 		board = new Board();
 		control = new Control(board);
-		frame = new GameFrame(control);
+		//frame = new GameFrame(control);
 		players = new ArrayList<Player>();
 		int playerNum = 0;
 		// Get number of players
@@ -62,7 +62,7 @@ public class CluedoGame {
 		do{
 			//board.printBoard(players);
 			//System.out.println(makeAccusation());
-			p = players.get(++i);
+			p = players.get(i++);
 			if (i == players.size()) {
 				i = 0;
 			}
@@ -95,14 +95,15 @@ public class CluedoGame {
 			RoomName room = board.getRoom(playerSelection);	
 			p.setPos(playerSelection);
 			p.setRoom(room);								//Room is null if they didn't select a room
-		}					
+		}
 		//then make suggestion/accusation
 		if(p.getCurrentRoom()==RoomName.CELLAR){
 			return makeAccusation(p);
-		}else{							//make suggestion
+		}else if(p.getCurrentRoom()!=null){					//make suggestion
 			makeSuggestion(p);
 			return true;
 		}
+		return true;
 	}
 	
 	/**

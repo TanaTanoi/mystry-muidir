@@ -5,6 +5,9 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import Graphics.GameFrame;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -29,6 +32,8 @@ public class Control {
 	Player currentPlayer;
 	List<Player> players;
 	Board b;
+	GameFrame frame;
+	
 	/*Various colors used for the map*/
 	private static final Color SPAWN_COLOR = new Color(130,90,20);	
 	private static final Color CELLAR_COLOR = new Color(40,40,40);
@@ -48,6 +53,7 @@ public class Control {
 	public Control(Board board){
 		b = board;
 		roomNames = b.getRoomCenters();
+		frame = new GameFrame(this);
 	}
 	
 	/**
@@ -57,7 +63,7 @@ public class Control {
 	 */
 	public int getTotalPlayers(){
 		//TODO actual content
-		return 0;
+		return 1;
 	}
 	/**
 	 * Asks the current player for a weapon card, for use with accusations and 
@@ -131,9 +137,25 @@ public class Control {
 	 * @return - Point the player has selected to move to (including room points) or null for other options.
 	 */
 	public Point displayPlayerMove(Set<Point> reachablePoints, Set<Room.RoomName> reachableRooms){
-		
-		
-		return null;
+		System.out.println("Asking for move");
+		int x,y;
+		do{
+			frame.clickedP = null;
+
+			while(frame.clickedP==null){
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+			}
+			x = (int)frame.clickedP.getX();
+			y = (int)frame.clickedP.getY();
+		}while(x <0||y<0||x>Board.boardSize||y>Board.boardSize||b.getSquare(x, y)!=Board.Square.OPEN||!reachablePoints.contains(frame.clickedP));
+				
+		System.out.println("Returning " +frame.clickedP.toString());
+		return frame.clickedP;
 	}
 	
 	/**
@@ -155,7 +177,11 @@ public class Control {
 	}
 	
 	
-
+	/**
+	 * Draws the walls of the board, dynamically. 
+	 * @param g
+	 * @param frameSize
+	 */
 	private void drawWalls(Graphics2D g, int frameSize) {
 
 		int squareSize = frameSize/Board.boardSize;
@@ -178,7 +204,7 @@ public class Control {
 					break;
 				default:
 					String name = current.toString();
-					if (name.contains("DOOR")){//draw doormat
+					if (name.contains("DOOR")){//draw door mat
 						drawSquareGrid(x,y,DOOR_MAT_COLOR,g,squareSize);
 					}else if (Character.isDigit(current.toString().charAt(2))){//spawn point
 						g.setColor(SPAWN_COLOR);
@@ -200,7 +226,15 @@ public class Control {
 		}
 	}
 	
-	
+	/**
+	 * Draws a square that has an out line that is slightly darker than the given colour,
+	 * for a grid effect.
+	 * @param x
+	 * @param y
+	 * @param c
+	 * @param g
+	 * @param squareSize
+	 */
 	private void drawSquareGrid(int x, int y, Color c,Graphics2D g,int squareSize){
 		g.setStroke(new BasicStroke(0.5f));
 		g.setColor(c);
@@ -208,6 +242,11 @@ public class Control {
 		g.setColor(new Color(c.getRed()+GRID_COLOR_OFFSET,c.getGreen()+GRID_COLOR_OFFSET,c.getBlue()+GRID_COLOR_OFFSET));
 		g.drawRect(x*squareSize,y*squareSize,squareSize,squareSize);
 	}
+	/**
+	 * Creates the image of the board, and adds a border and saves it as an image
+	 * @param frameSize
+	 * @return
+	 */
 	public BufferedImage getBoardImage(int frameSize){
 		int squareSize = frameSize/Board.boardSize;
 		BufferedImage out = new BufferedImage(squareSize*Board.boardSize, squareSize*Board.boardSize, BufferedImage.TYPE_INT_RGB);

@@ -21,7 +21,7 @@ public class Board {
 	 * Represents every different kind of square in the game
 	 *
 	 */
-	public enum Square{
+	public static  enum Square{
 		NA,		//Inaccessible
 		OPEN,	//open area
 		KITCHEN,
@@ -53,7 +53,7 @@ public class Board {
 
 	//This enum set represents a door into a room, for ease of use. Use the roomsDoor
 	//method to find the room that links to this door
-	EnumSet<Square> doors = EnumSet.of(Square.KITCHEN_DOOR,Square.BALLROOM_DOOR,Square.CONSERVATORY_DOOR,
+	public static EnumSet<Square> doors = EnumSet.of(Square.KITCHEN_DOOR,Square.BALLROOM_DOOR,Square.CONSERVATORY_DOOR,
 			Square.DINING_ROOM_DOOR,Square.BILLIARD_ROOM_DOOR,Square.LIBRARY_DOOR,Square.LOUNGE_DOOR,
 			Square.HALL_DOOR,Square.STUDY_DOOR,Square.S_1,Square.S_2,Square.S_3,Square.S_4,Square.S_5,Square.S_6);
 
