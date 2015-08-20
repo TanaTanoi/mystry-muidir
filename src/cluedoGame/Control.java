@@ -22,7 +22,7 @@ import java.awt.Font;
 
 /**
  * This class is the bridge between the CluedoGame (model) and the GUI (view).
- * It decodes information from the GUI into information usable by the model, 
+ * It decodes information from the GUI into information usable by the model,
  * and makes requests that can be then displayed to the use via the GUI.
  * @author Tana
  *
@@ -33,9 +33,9 @@ public class Control {
 	List<Player> players;
 	Board b;
 	GameFrame frame;
-	
+
 	/*Various colors used for the map*/
-	private static final Color SPAWN_COLOR = new Color(130,90,20);	
+	private static final Color SPAWN_COLOR = new Color(130,90,20);
 	private static final Color CELLAR_COLOR = new Color(40,40,40);
 	private static final Color DOOR_MAT_COLOR = new Color(215,175,105);
 	private static final Color HALLWAY_COLOR = new Color(230,190,120);
@@ -44,7 +44,7 @@ public class Control {
 	private static final Color GRID_COLOR = new Color(100,10,10);
 	/*The colors of the grid, relative to the square it is on*/
 	private static final int GRID_COLOR_OFFSET = -10;
-	
+	private static final double NAME_FONT_SCALE = 0.6;
 	Map<String,Point> roomNames;// = b.getRoomCenters();
 	/**
 	 * Passes in the board to allow the frame to construct a background image
@@ -55,9 +55,9 @@ public class Control {
 		roomNames = b.getRoomCenters();
 		frame = new GameFrame(this);
 	}
-	
+
 	/**
-	 * Asks the user for the number of players and 
+	 * Asks the user for the number of players and
 	 * returns it to the cluedogame
 	 * @return
 	 */
@@ -66,35 +66,35 @@ public class Control {
 		return 1;
 	}
 	/**
-	 * Asks the current player for a weapon card, for use with accusations and 
+	 * Asks the current player for a weapon card, for use with accusations and
 	 * suggestions.
 	 * @return
 	 */
 	public WeaponCard requestWeaponCard(){
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Asks the current player for a character card, for use with accusations
 	 * and suggestions.
 	 * @return
 	 */
 	public CharacterCard requestCharacterCard(){
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Asks the current player for a room card, for use with accusations.
 	 * @return
 	 */
 	public RoomCard requestRoomCard(){
-		
+
 		return null;
 	}
 	/**
-	 * Asks the user n (which corresponds to a character portrait) 
+	 * Asks the user n (which corresponds to a character portrait)
 	 * for their player name and returns the string.
 	 * @param n
 	 * @return
@@ -103,16 +103,16 @@ public class Control {
 		//TODO
 		return "dave";
 	}
-	
+
 	/**
-	 * Displays the names of the players along side the portrait 
+	 * Displays the names of the players along side the portrait
 	 * and then continues once finished.
 	 * @param names
 	 */
 	public void displayPlayers(List<Player> players){
 		//TODO
 		this.players = players;
-		
+
 	}
 	/**
 	 * Displays the given player's information on screen,
@@ -124,9 +124,9 @@ public class Control {
 	public void displayPlayerInformation(Player p){
 		//TOOD
 	}
-	
+
 	/**
-	 * Displays the new information which happens after displayPlayerInformation 
+	 * Displays the new information which happens after displayPlayerInformation
 	 * has been run. This method shows the player what points and rooms they can
 	 * reach, then awaits an input coordinate or if another option is selected, null,
 	 *  which would then tell the game to run suggestion/accusation option.
@@ -148,16 +148,19 @@ public class Control {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-
 			}
 			x = (int)frame.clickedP.getX();
 			y = (int)frame.clickedP.getY();
-		}while(x <0||y<0||x>Board.boardSize||y>Board.boardSize||b.getSquare(x, y)!=Board.Square.OPEN||!reachablePoints.contains(frame.clickedP));
-				
+			//if(x>0&&y>0&&x<Board.boardSize&&y<Board.boardSize&&)
+		//}while((!(x<0)&&!(y<0)&&!(x>Board.boardSize)&&!(y>Board.boardSize))
+			//	&&(b.getSquare(x, y)==Board.Square.OPEN)&&reachablePoints.contains(frame.clickedP));
+				//(x <0||y<0||x>Board.boardSize||y>Board.boardSize)
+				//||b.getSquare(x, y)!=Board.Square.OPEN||!reachablePoints.contains(frame.clickedP));
+		}while(!reachablePoints.contains(frame.clickedP));
 		System.out.println("Returning " +frame.clickedP.toString());
 		return frame.clickedP;
 	}
-	
+
 	/**
 	 * Displays the refuted card to the current viewer from the given player.
 	 * TODO? maybe also wait for confirmation before returning?
@@ -165,7 +168,7 @@ public class Control {
 	 * @param c
 	 */
 	public void displayRefutedCard(Player p, Card c){
-		
+
 		//TODO
 	}
 	/**
@@ -175,21 +178,21 @@ public class Control {
 	public void displayWinner(Player p){
 		//TODO
 	}
-	
-	
+
+
 	/**
-	 * Draws the walls of the board, dynamically. 
+	 * Draws the walls of the board, dynamically.
 	 * @param g
 	 * @param frameSize
 	 */
 	private void drawWalls(Graphics2D g, int frameSize) {
 
 		int squareSize = frameSize/Board.boardSize;
-		
+
 		for (int x = 0; x < Board.boardSize; x++){
 			for (int y = 0; y < Board.boardSize; y++){
 				Board.Square current = b.getSquare(x, y);
-			
+
 				switch (current) {
 				case NA: //Paint inaccessible square
 					g.setColor(Color.black);
@@ -210,7 +213,7 @@ public class Control {
 						g.setColor(SPAWN_COLOR);
 						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					}else{
-						
+
 						g.setColor(ROOM_COLOR); //slightly darker than the hallway
 						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 						g.setStroke(new BasicStroke(4));
@@ -225,7 +228,7 @@ public class Control {
 			}
 		}
 	}
-	
+
 	/**
 	 * Draws a square that has an out line that is slightly darker than the given colour,
 	 * for a grid effect.
@@ -253,7 +256,7 @@ public class Control {
 		Graphics2D g= (Graphics2D)out.getGraphics();
 		g.setColor(new Color(180,10,10));
 		g.fillRect(0,0, 1000, 1000); //Draws background of board
-		
+
 		drawWalls(g,frameSize);
 		g.setStroke(new BasicStroke(1));
 		g.setColor(GRID_COLOR);
@@ -268,13 +271,20 @@ public class Control {
 		g.drawLine(0, 0, 0, frameSize); //LEFT
 		g.drawLine(frameSize, 0, frameSize, frameSize); //RIGHT
 		g.setColor(Color.black);
-		g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,(int)(squareSize/1.5)));
+		g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,(int)(squareSize*NAME_FONT_SCALE)));
 		for(String s:roomNames.keySet()){
 			Point p = roomNames.get(s);
-			g.drawString(s, (p.x*squareSize-s.length()*2), p.y*squareSize);
+			g.drawString(formatString(s), (p.x*squareSize-s.length()*2), p.y*squareSize);
 		}
-		
-		
+
+
 		return out;
+	}
+
+	private String formatString(String s){
+		StringBuilder sb = new StringBuilder();
+		sb.append(s.charAt(0));
+		sb.append(s.substring(1, s.length()).toLowerCase());
+		return sb.toString().replace("_", " ");
 	}
 }

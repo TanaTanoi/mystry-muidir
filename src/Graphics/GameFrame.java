@@ -1,7 +1,9 @@
 package Graphics;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.GridLayout;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -18,6 +20,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
+import com.sun.xml.internal.ws.message.MimeAttachmentSet;
+
 import cluedoGame.Control;
 import cluedoPieces.Board;
 
@@ -25,6 +29,7 @@ import cluedoPieces.Board;
 public class GameFrame extends JFrame implements MouseListener, MouseMotionListener{
 	private static final int BOARD_TOP = 61;
 	private static final int BOARD_LEFT= 15;
+	private static final int MINIMUM_SIZE = 400;
 
 	public Point clickedP = null;
 
@@ -41,6 +46,7 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setResizable(true);
+		setMinimumSize(new Dimension(MINIMUM_SIZE, MINIMUM_SIZE));
 		setVisible(true);
 		addButtons();
 	}
