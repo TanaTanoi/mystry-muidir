@@ -28,6 +28,11 @@ public class Control {
 	Player currentPlayer;
 	List<Player> players;
 	Board b;
+	
+	private static final Color SPAWN_COLOR = new Color(0,255,0);
+	private static final Color DOOR_MAT_COLOR = new Color(225,178,70);
+	private static final Color CELLAR_COLOR = new Color(40,40,40);
+	private static final Color HALLWAY_COLOR = new Color(255,208,100);
 	/**
 	 * Passes in the board to allow the frame to construct a background image
 	 * @param board
@@ -143,8 +148,7 @@ public class Control {
 	
 
 	private void drawWalls(Graphics2D g, int frameSize) {
-		Color door = new Color(255,89,100);
-		Color spawnPoint = new Color(0,255,0);
+
 		int squareSize = frameSize/Board.boardSize;
 		g.setStroke(new BasicStroke(4));
 		for (int x = 0; x < Board.boardSize; x++){
@@ -156,20 +160,20 @@ public class Control {
 					g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					break;
 				case OPEN://Paint hallway square
-					g.setColor(new Color(255,208,100));//orangeish
+					g.setColor(HALLWAY_COLOR);//orangeish
 					g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					break;
 				case CELLAR:
-					g.setColor(new Color(40,40,40));//grey
+					g.setColor(CELLAR_COLOR);//grey
 					g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					break;
 				default:
 					String name = current.toString();
 					if (name.contains("DOOR")){//draw doormat
-						g.setColor(new Color(225,178,70)); //slightly darker than the hallway
+						g.setColor(DOOR_MAT_COLOR); //slightly darker than the hallway
 						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					}else if (Character.isDigit(current.toString().charAt(2))){//spawn point
-						g.setColor(spawnPoint);
+						g.setColor(SPAWN_COLOR);
 						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					}else{
 						g.setColor(Color.black);
