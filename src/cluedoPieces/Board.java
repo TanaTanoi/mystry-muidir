@@ -6,11 +6,10 @@ import java.util.*;
 
 import cluedoPieces.Card.RoomType;
 import cluedoPieces.Room.RoomName;
-import javafx.geometry.Point3D;
 
 public class Board {
 
-	private static final String LAYOUT_FILE = "bin/assets/layout.txt";
+	private final String LAYOUT_FILE;// = "bin/assets/layout.txt";
 	private static final String LEGEND_FILE = "bin/assets/layout_legend.txt";
 	public static final int boardSize = 26;
 	Square[][] board;
@@ -61,14 +60,26 @@ public class Board {
 	//This map represents the layout.txt characters to an enum. This must be loaded before use, through loadLegend()
 	Map<String,Square> layoutLegend = new HashMap<String,Square>();
 
-	public Board(){
+	/*public Board(){
 
 		board = new Square[boardSize][boardSize];
 		this.loadLegend();
 		this.loadLayout();
 		this.mapDoors();
-	}
+	}*/
 
+	/**
+	 * Secondary constructor that allows a different
+	 * layout file to be entered.
+	 * @param layoutfile
+	 */
+	public Board(String layoutfile){
+		LAYOUT_FILE = layoutfile;
+		board = new Square[boardSize][boardSize];
+		this.loadLegend();
+		this.loadLayout();
+		this.mapDoors();
+	}
 
 	/**
 	 * Loads the legend of characters to Square enums and places it into the layoutLegend map.
@@ -149,7 +160,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets the points associated with a given room string
 	 * @param room
@@ -173,7 +184,7 @@ public class Board {
 		reachableRec(toReturn,s.x,s.y,radius);
 		return toReturn.keySet();
 	}
-	
+
 	/**
 	 * This method finds all reachable points from a given room ( as opposed to a given
 	 * point) and returns the set of points.
@@ -188,7 +199,7 @@ public class Board {
 		}
 		return toReturn.keySet();
 	}
-	
+
 	/**
 	 * Recursive method used by reachablePoints method that adds all nearby, accessible points
 	 * to the set until it runs out of steps or combinations.
@@ -405,7 +416,7 @@ public class Board {
 	public Point getStartingPoint(int point){
 		return startingPoints[point-1];
 	}
-	
+
 	public Square getSquare(int x, int y){
 		return board[x][y];
 	}
@@ -420,7 +431,7 @@ public class Board {
 		Square tile = board[p.x][p.y];
 		if(!(doors.contains(tile)||tile==Square.OPEN)){	//if room
 			return Room.RoomName.valueOf(board[p.x][p.y].toString());
-		}else{											//if not room	
+		}else{											//if not room
 			return null;
 		}
 	}
@@ -441,9 +452,9 @@ public class Board {
 						points.put(name, new Point3D(i,j,1));
 					}else{										//else, add to it and increment count
 						Point3D temp = points.get(name);
-						points.put(name, new Point3D(temp.getX()+i,temp.getY()+j,temp.getZ()+1));
+						points.put(name, new Point3D(temp.x+i,temp.y+j,temp.z+1));
 					}
-				
+
 				}catch(IllegalArgumentException e){
 					//skip this name if its bad
 				}
@@ -454,15 +465,31 @@ public class Board {
 		for(String s:points.keySet()){
 			Point3D temp = points.get(s);
 			//Average the point and add it to the set
-			
-			double count = temp.getZ();
-			int x = (int)(temp.getX()/count);
-			int y = (int)(temp.getY()/count);
-			System.out.println("Count " + count  + "  TEMP X|Y " + temp.getX() + "|"+temp.getY());
+
+			double count = temp.z;
+			int x = (int)(temp.x/count);
+			int y = (int)(temp.y/count);
+			System.out.println("Count " + count  + "  TEMP X|Y " + temp.x + "|"+temp.x);
 			System.out.println(x + " " +y);
 			toReturn.put(s, new Point(x,y));
 		}
-	return toReturn;	
+	return toReturn;
+	}
+
+	/**
+	 * 3D point class that is immutable, for use with
+	 * the roomCenter counts (basically a 3 int tuple)
+	 * Replaced the use of the javafx Point3D as it is not always supported
+	 * @author Tana
+	 *
+	 */
+	public class Point3D{
+		public final int x,y,z;
+		public Point3D(int x, int y,int z){
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
 	}
 
 }

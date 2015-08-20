@@ -23,8 +23,9 @@ public class CluedoTests {
 	 *------Deck Class tests-----
 	 *---------------------------
 	 */
+	private static String default_layout = "bin/assets/layout.txt";
 	Deck deck;
-	Board b= new Board();
+	Board b= new Board(default_layout);
 	@Test
 	public void deck_create_1(){// Should create a new deck without error
 		ArrayList<Player> players = new ArrayList<Player>();
@@ -110,7 +111,7 @@ public class CluedoTests {
 	public void board_create_1(){
 		//Board board;
 		try{
-			b = new Board();
+			b = new Board(default_layout);
 			assert true;
 		}catch(Exception e){
 			assert false;
@@ -120,7 +121,7 @@ public class CluedoTests {
 	@Test
 	public void board_find_1(){
 		//Create a normal board and find the reachable points
-		//Board board = new Board();
+		//Board board = new Board(default_layout);
 		Set<Point> reachables = b.reachablePoints(new Point(9,9), 3);
 		assertTrue(reachables.contains(new Point(11,9)));//reachable
 		assertTrue(reachables.contains(new Point(10,8)));//reachable
@@ -146,7 +147,7 @@ public class CluedoTests {
 
 	@Test
 	public void board_room_find_1(){
-		b = new Board();
+		b = new Board(default_layout);
 		Set<Room.RoomName> rooms = new HashSet<Room.RoomName>();
 		rooms.addAll(b.reachableRooms(new Point(9,9), 25));			//Should find all rooms
 		assertTrue(rooms.size() == 10);								//all 9 rooms
@@ -159,7 +160,7 @@ public class CluedoTests {
 
 	@Test
 	public void board_room_find_2(){
-		b = new Board();
+		b = new Board(default_layout);
 		Set<Room.RoomName> rooms = new HashSet<Room.RoomName>();
 		rooms.addAll(b.reachableRooms(RoomName.STUDY,4));		//should reach Hall and Kitchen (trap door)
 		assertTrue(rooms.contains(RoomName.KITCHEN));
@@ -169,7 +170,7 @@ public class CluedoTests {
 	@Test
 	public void board_room_find_3(){
 		//should be able to reach all rooms from here
-		b = new Board();
+		b = new Board(default_layout);
 		Set<Room.RoomName> rooms = new HashSet<Room.RoomName>();
 		rooms.addAll(b.reachableRooms(RoomName.KITCHEN,25));		//should reach all
 		assertEquals(rooms.size(),9);
@@ -177,7 +178,7 @@ public class CluedoTests {
 
 	@Test
 	public void board_room_stairs_find_1(){
-		b = new Board();
+		b = new Board(default_layout);
 		Set<Room.RoomName> rooms = new HashSet<Room.RoomName>();
 		rooms.addAll(b.reachableRooms(RoomName.CONSERVATORY,1));
 		assert(rooms.size()==1);
@@ -190,7 +191,7 @@ public class CluedoTests {
 	}
 	@Test
 	public void board_print_1(){
-		b = new Board();
+		b = new Board(default_layout);
 		try{
 			List<Player> players = new ArrayList<Player>();
 			Player p = new Player("Dave");
@@ -207,7 +208,7 @@ public class CluedoTests {
 
 	@Test
 	public void board_room_find_invalid(){
-		b = new Board();
+		b = new Board(default_layout);
 		try{
 			b.reachableRooms(new Point(1,1), 1);
 			assertTrue(false);

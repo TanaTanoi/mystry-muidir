@@ -12,20 +12,23 @@ import cluedoPieces.Card.Person;
 public class CluedoGame {
 	private Control control;
 	//private GameFrame frame;
-	
+
 	private Board board;
 	private Deck deck;
 	private ArrayList<Player> players;
 	private int remainingPlayers;
-
+	private static String default_layout = "bin/assets/layout.txt";
 	public static void main(String[] args) {
+		if(args.length==1){
+			default_layout = args[0];
+		}
 		new CluedoGame();
 
 	}
 
 	public CluedoGame() {
 		startGame();
-		
+
 	}
 
 	/**
@@ -34,7 +37,7 @@ public class CluedoGame {
 	 * loop
 	 */
 	private void startGame() {
-		board = new Board();
+		board = new Board(default_layout);
 		control = new Control(board);
 		//frame = new GameFrame(control);
 		players = new ArrayList<Player>();
@@ -54,7 +57,7 @@ public class CluedoGame {
 		control.displayPlayers(players);
 		//Initialize deck with players
 		deck = new Deck(players);
-		
+
 		int i = 0;// redeclare i for use with this loop
 		Player p = players.get(i);
 
@@ -72,7 +75,7 @@ public class CluedoGame {
 
 	/**
 	 * The main game loop is this method run repeatedly. Once this returns true, the game is over.
-	 * @param p 
+	 * @param p
 	 * @return - True if the player is correct and the game is over. False if player is wrong or no accusation made
 	 */
 	private boolean playerTurn(Player p){
@@ -92,7 +95,7 @@ public class CluedoGame {
 		//Pass movements into the view and await a selection from the user
 		Point playerSelection = control.displayPlayerMove(reachablePoints, reachableRooms);
 		if(playerSelection!=null){//If the player made a point selection, move there
-			RoomName room = board.getRoom(playerSelection);	
+			RoomName room = board.getRoom(playerSelection);
 			p.setPos(playerSelection);
 			p.setRoom(room);								//Room is null if they didn't select a room
 		}
@@ -105,7 +108,7 @@ public class CluedoGame {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Makes a suggestion using the current player.
 	 * @param p
@@ -124,10 +127,10 @@ public class CluedoGame {
 		}
 
 	}
-	
+
 	/**
-	 * Makes an accusation using the current player. 
-	 * @param p 
+	 * Makes an accusation using the current player.
+	 * @param p
 	 * @return - If accusation is correct or not
 	 */
 	private boolean makeAccusation(Player p){
@@ -138,15 +141,15 @@ public class CluedoGame {
 		Card[] accusation = {room,weapon,ch};
 		if(deck.compareMurderCards(accusation)){	//if proposal is correct
 			return true;
-		}		
+		}
 		//if they are wrong
 		remainingPlayers--;
 		p.setInactive();
 		return false;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Takes place of dice roll - generates random number from 1-6
 	 * @return random number from 1 - 6
