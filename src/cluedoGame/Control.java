@@ -1,9 +1,13 @@
 package cluedoGame;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Set;
-
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import cluedoPieces.Board;
 import cluedoPieces.Card;
 import cluedoPieces.CharacterCard;
@@ -23,12 +27,13 @@ public class Control {
 
 	Player currentPlayer;
 	List<Player> players;
+	Board b;
 	/**
 	 * Passes in the board to allow the frame to construct a background image
 	 * @param board
 	 */
 	public Control(Board board){
-		
+		b = board;
 	}
 	
 	/**
@@ -133,5 +138,71 @@ public class Control {
 	 */
 	public void displayWinner(Player p){
 		//TODO
+	}
+	
+	
+
+	private void drawWalls(Graphics2D g, int frameSize) {
+		Color door = new Color(255,89,100);
+		Color spawnPoint = new Color(0,255,0);
+		int squareSize = frameSize/Board.boardSize;
+		g.setStroke(new BasicStroke(4));
+		for (int x = 0; x < Board.boardSize; x++){
+			for (int y = 0; y < Board.boardSize; y++){
+				Board.Square current = b.getSquare(x, y);
+				switch (current) {
+				case NA: //Paint inaccessible square
+					g.setColor(Color.black);
+					g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+					break;
+				case OPEN://Paint hallway square
+					g.setColor(new Color(255,208,100));//orangeish
+					g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+					break;
+				case CELLAR:
+					g.setColor(new Color(40,40,40));//grey
+					g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+					break;
+				default:
+					String name = current.toString();
+					if (name.contains("DOOR")){//draw doormat
+						g.setColor(new Color(225,178,70)); //slightly darker than the hallway
+						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+					}else if (Character.isDigit(current.toString().charAt(2))){//spawn point
+						g.setColor(spawnPoint);
+						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+					}else{
+						g.setColor(Color.black);
+						if(x == 0 || !b.getSquare(x-1, y).toString().contains(name)) g.drawLine(x*squareSize, y*squareSize, x*squareSize, (y+1)*squareSize);
+						if(y == 0 || !b.getSquare(x, y-1).toString().contains(name)) g.drawLine(x*squareSize, y*squareSize, (x+1)*squareSize, y*squareSize);
+						if(x == Board.boardSize-1 || !b.getSquare(x+1, y).toString().contains(name)) g.drawLine((x+1)*squareSize, y*squareSize, (x+1)*squareSize, (y+1)*squareSize);
+						if(y == Board.boardSize-1  || !b.getSquare(x, y+1).toString().contains(name)) g.drawLine(x*squareSize, (y+1)*squareSize, (x+1)*squareSize, (y+1)*squareSize);
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	public BufferedImage getBoardImage(int frameSize){
+		int squareSize = frameSize/Board.boardSize;
+		BufferedImage out = new BufferedImage(squareSize*Board.boardSize, squareSize*Board.boardSize, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g= (Graphics2D)out.getGraphics();
+		g.setColor(new Color(180,10,10));
+		g.fillRect(0,0, 1000, 1000); //Draws background of board
+		
+		drawWalls(g,frameSize);
+		g.setStroke(new BasicStroke(1));
+		g.setColor(Color.BLACK);
+		for (int i = 0; i < Board.boardSize; i++){ //Draws grid over top
+			g.drawLine(i*squareSize, 0, i*squareSize, frameSize);
+			g.drawLine(0,i*squareSize,frameSize, i*squareSize);
+		}
+		g.setStroke(new BasicStroke(8));//change line thickness for drawing game boarders
+		g.drawLine(0, 0, frameSize, 0); //TOP
+		g.drawLine(0, frameSize, frameSize, frameSize); //BOTTOM
+		g.drawLine(0, 0, 0, frameSize); //LEFT
+		g.drawLine(frameSize, 0, frameSize, frameSize); //RIGHT
+		return out;
 	}
 }

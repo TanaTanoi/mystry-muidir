@@ -11,7 +11,7 @@ public class Board {
 
 	private static final String LAYOUT_FILE = "bin/assets/layout.txt";
 	private static final String LEGEND_FILE = "bin/assets/layout_legend.txt";
-	private static final int boardSize = 25;
+	public static final int boardSize = 25;
 	Square[][] board;
 	private Point[] startingPoints;
 	private HashMap<String,Set<Point>> doorMap;
@@ -20,7 +20,7 @@ public class Board {
 	 * Represents every different kind of square in the game
 	 *
 	 */
-	enum Square{
+	public enum Square{
 		NA,		//Inaccessible
 		OPEN,	//open area
 		KITCHEN,
@@ -104,8 +104,8 @@ public class Board {
 		try{
 			Scanner sc = new Scanner(new File(LAYOUT_FILE));
 
-			int i = 0;
-			int j = 0;
+			int x = 0;
+			int y = 0;
 
 			while(sc.hasNext()){
 				String line = sc.nextLine();		//read line
@@ -114,17 +114,17 @@ public class Board {
 				while(sc2.hasNext()){
 					String input = sc2.next();
 					//					System.out.print(input + "|");
-					board[j][i] = layoutLegend.get(input);
+					board[x][y] = layoutLegend.get(input);
 					if (Character.isDigit(input.charAt(0))){
 						int num = Integer.parseInt(input)-1;
-						startingPoints[num] = new Point(j,i);
+						startingPoints[num] = new Point(x,y);
 					}
 					//	System.out.print("|"+i+" " +j+  " " + input+"|");
-					i++;
+					x++;
 
 				}
-				i=0;
-				j++;
+				x=0;
+				y++;
 				sc2.close();
 			}
 			sc.close();
@@ -405,6 +405,10 @@ public class Board {
 	public Point getStartingPoint(int point){
 		return startingPoints[point-1];
 	}
+	
+	public Square getSquare(int x, int y){
+		return board[x][y];
+	}
 	/**
 	 * Method to tell if a point is inside a room or not. Returns null if not
 	 * on a room
@@ -420,4 +424,6 @@ public class Board {
 			return null;
 		}
 	}
+	
+
 }

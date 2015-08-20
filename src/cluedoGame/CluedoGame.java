@@ -3,15 +3,15 @@ package cluedoGame;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import Graphics.*;
 import cluedoPieces.*;
 import cluedoPieces.Room.RoomName;
 import cluedoPieces.Card.Person;
 public class CluedoGame {
 	private Control control;
-	
+	private GameFrame frame;
 	
 	private Board board;
 	private Deck deck;
@@ -25,6 +25,7 @@ public class CluedoGame {
 
 	public CluedoGame() {
 		startGame();
+		
 	}
 
 	/**
@@ -35,6 +36,7 @@ public class CluedoGame {
 	private void startGame() {
 		board = new Board();
 		control = new Control(board);
+		frame = new GameFrame(control);
 		players = new ArrayList<Player>();
 		int playerNum = 0;
 		// Get number of players
