@@ -6,12 +6,13 @@ import java.util.*;
 
 import cluedoPieces.Card.RoomType;
 import cluedoPieces.Room.RoomName;
+import javafx.geometry.Point3D;
 
 public class Board {
 
 	private static final String LAYOUT_FILE = "bin/assets/layout.txt";
 	private static final String LEGEND_FILE = "bin/assets/layout_legend.txt";
-	public static final int boardSize = 25;
+	public static final int boardSize = 26;
 	Square[][] board;
 	private Point[] startingPoints;
 	private HashMap<String,Set<Point>> doorMap;
@@ -55,7 +56,6 @@ public class Board {
 	EnumSet<Square> doors = EnumSet.of(Square.KITCHEN_DOOR,Square.BALLROOM_DOOR,Square.CONSERVATORY_DOOR,
 			Square.DINING_ROOM_DOOR,Square.BILLIARD_ROOM_DOOR,Square.LIBRARY_DOOR,Square.LOUNGE_DOOR,
 			Square.HALL_DOOR,Square.STUDY_DOOR,Square.S_1,Square.S_2,Square.S_3,Square.S_4,Square.S_5,Square.S_6);
-
 
 
 	//This map represents the layout.txt characters to an enum. This must be loaded before use, through loadLegend()
@@ -416,7 +416,7 @@ public class Board {
 	 * @return - Room at this point, null if not a room
 	 */
 	public Room.RoomName getRoom(Point p){
-		if(p.x>25||p.y>25||p.x<0||p.y<0)throw new IllegalArgumentException("Point must be within board area");
+		if(p.x>boardSize||p.y>boardSize||p.x<0||p.y<0)throw new IllegalArgumentException("Point must be within board area");
 		Square tile = board[p.x][p.y];
 		if(!(doors.contains(tile)||tile==Square.OPEN)){	//if room
 			return Room.RoomName.valueOf(board[p.x][p.y].toString());
@@ -424,6 +424,45 @@ public class Board {
 			return null;
 		}
 	}
-	
+	/**
+	 * This method gets points at the center of the room for use
+	 * with dynamically drawing the names of the rooms on the board.
+	 * @return
+	 */
+	public Map<String, Point> getRoomCenters(){
+		/*Collect the data*/
+		Map<String,Point3D> points= new HashMap<String, Point3D>();
+		for(int i = 0;i<boardSize;i++){
+			for(int j = 0;j<boardSize;j++){
+				String name = board[i][j].toString();
+				try{
+					Room.RoomName.valueOf(name);//if it is not a room, it will throw exception
+					if(!points.containsKey(name)){				//if not in the map, add with value of one
+						points.put(name, new Point3D(i,j,1));
+					}else{										//else, add to it and increment count
+						Point3D temp = points.get(name);
+						points.put(name, new Point3D(temp.getX()+i,temp.getY()+j,temp.getZ()+1));
+					}
+				
+				}catch(IllegalArgumentException e){
+					//skip this name if its bad
+				}
+			}
+		}
+		/*Average the data*/
+		Map<String, Point> toReturn = new HashMap<String,Point>();
+		for(String s:points.keySet()){
+			Point3D temp = points.get(s);
+			//Average the point and add it to the set
+			
+			double count = temp.getZ();
+			int x = (int)(temp.getX()/count);
+			int y = (int)(temp.getY()/count);
+			System.out.println("Count " + count  + "  TEMP X|Y " + temp.getX() + "|"+temp.getY());
+			System.out.println(x + " " +y);
+			toReturn.put(s, new Point(x,y));
+		}
+	return toReturn;	
+	}
 
 }

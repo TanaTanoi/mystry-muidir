@@ -3,10 +3,10 @@ package cluedoGame;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import cluedoPieces.Board;
 import cluedoPieces.Card;
@@ -15,6 +15,7 @@ import cluedoPieces.Player;
 import cluedoPieces.Room;
 import cluedoPieces.RoomCard;
 import cluedoPieces.WeaponCard;
+import java.awt.Font;
 
 /**
  * This class is the bridge between the CluedoGame (model) and the GUI (view).
@@ -28,17 +29,25 @@ public class Control {
 	Player currentPlayer;
 	List<Player> players;
 	Board b;
-	
-	private static final Color SPAWN_COLOR = new Color(0,255,0);
-	private static final Color DOOR_MAT_COLOR = new Color(225,178,70);
+	/*Various colors used for the map*/
+	private static final Color SPAWN_COLOR = new Color(130,90,20);	
 	private static final Color CELLAR_COLOR = new Color(40,40,40);
-	private static final Color HALLWAY_COLOR = new Color(255,208,100);
+	private static final Color DOOR_MAT_COLOR = new Color(215,175,105);
+	private static final Color HALLWAY_COLOR = new Color(230,190,120);
+	private static final Color ROOM_COLOR = new Color(212,197,200);
+	private static final Color WALL_COLOR = new Color(130,100,100);
+	private static final Color GRID_COLOR = new Color(100,10,10);
+	/*The colors of the grid, relative to the square it is on*/
+	private static final int GRID_COLOR_OFFSET = -10;
+	
+	Map<String,Point> roomNames;// = b.getRoomCenters();
 	/**
 	 * Passes in the board to allow the frame to construct a background image
 	 * @param board
 	 */
 	public Control(Board board){
 		b = board;
+		roomNames = b.getRoomCenters();
 	}
 	
 	/**
@@ -150,18 +159,18 @@ public class Control {
 	private void drawWalls(Graphics2D g, int frameSize) {
 
 		int squareSize = frameSize/Board.boardSize;
-		g.setStroke(new BasicStroke(4));
+		
 		for (int x = 0; x < Board.boardSize; x++){
 			for (int y = 0; y < Board.boardSize; y++){
 				Board.Square current = b.getSquare(x, y);
+			
 				switch (current) {
 				case NA: //Paint inaccessible square
 					g.setColor(Color.black);
 					g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					break;
 				case OPEN://Paint hallway square
-					g.setColor(HALLWAY_COLOR);//orangeish
-					g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+					drawSquareGrid(x,y,HALLWAY_COLOR,g,squareSize);
 					break;
 				case CELLAR:
 					g.setColor(CELLAR_COLOR);//grey
@@ -170,24 +179,35 @@ public class Control {
 				default:
 					String name = current.toString();
 					if (name.contains("DOOR")){//draw doormat
-						g.setColor(DOOR_MAT_COLOR); //slightly darker than the hallway
-						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+						drawSquareGrid(x,y,DOOR_MAT_COLOR,g,squareSize);
 					}else if (Character.isDigit(current.toString().charAt(2))){//spawn point
 						g.setColor(SPAWN_COLOR);
 						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					}else{
-						g.setColor(Color.black);
-						if(x == 0 || !b.getSquare(x-1, y).toString().contains(name)) g.drawLine(x*squareSize, y*squareSize, x*squareSize, (y+1)*squareSize);
-						if(y == 0 || !b.getSquare(x, y-1).toString().contains(name)) g.drawLine(x*squareSize, y*squareSize, (x+1)*squareSize, y*squareSize);
-						if(x == Board.boardSize-1 || !b.getSquare(x+1, y).toString().contains(name)) g.drawLine((x+1)*squareSize, y*squareSize, (x+1)*squareSize, (y+1)*squareSize);
-						if(y == Board.boardSize-1  || !b.getSquare(x, y+1).toString().contains(name)) g.drawLine(x*squareSize, (y+1)*squareSize, (x+1)*squareSize, (y+1)*squareSize);
+						
+						g.setColor(ROOM_COLOR); //slightly darker than the hallway
+						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+						g.setStroke(new BasicStroke(4));
+						g.setColor(WALL_COLOR);
+						if(x == 0 || !b.getSquare(x-1, y).toString().contains(name)) g.drawLine(x*squareSize+1, y*squareSize, x*squareSize+1, (y+1)*squareSize);
+						if(y == 0 || !b.getSquare(x, y-1).toString().contains(name)) g.drawLine(x*squareSize, y*squareSize+1, (x+1)*squareSize, y*squareSize+1);
+						if(x == Board.boardSize-1 || !b.getSquare(x+1, y).toString().contains(name)) g.drawLine((x+1)*squareSize-1, y*squareSize, (x+1)*squareSize-1, (y+1)*squareSize);
+						if(y == Board.boardSize-1  || !b.getSquare(x, y+1).toString().contains(name)) g.drawLine(x*squareSize, (y+1)*squareSize-1, (x+1)*squareSize, (y+1)*squareSize-1);
 					}
 					break;
 				}
 			}
 		}
 	}
-
+	
+	
+	private void drawSquareGrid(int x, int y, Color c,Graphics2D g,int squareSize){
+		g.setStroke(new BasicStroke(0.5f));
+		g.setColor(c);
+		g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
+		g.setColor(new Color(c.getRed()+GRID_COLOR_OFFSET,c.getGreen()+GRID_COLOR_OFFSET,c.getBlue()+GRID_COLOR_OFFSET));
+		g.drawRect(x*squareSize,y*squareSize,squareSize,squareSize);
+	}
 	public BufferedImage getBoardImage(int frameSize){
 		int squareSize = frameSize/Board.boardSize;
 		BufferedImage out = new BufferedImage(squareSize*Board.boardSize, squareSize*Board.boardSize, BufferedImage.TYPE_INT_RGB);
@@ -197,16 +217,25 @@ public class Control {
 		
 		drawWalls(g,frameSize);
 		g.setStroke(new BasicStroke(1));
-		g.setColor(Color.BLACK);
-		for (int i = 0; i < Board.boardSize; i++){ //Draws grid over top
-			g.drawLine(i*squareSize, 0, i*squareSize, frameSize);
-			g.drawLine(0,i*squareSize,frameSize, i*squareSize);
-		}
+		g.setColor(GRID_COLOR);
+		/*for (int i = 1; i < Board.boardSize-1; i++){ //Draws grid over top
+			g.drawLine(i*squareSize, squareSize, i*squareSize, frameSize-squareSize);
+			g.drawLine(squareSize,i*squareSize,frameSize-squareSize, i*squareSize);
+		}*/
 		g.setStroke(new BasicStroke(8));//change line thickness for drawing game boarders
+		g.setColor(Color.black);
 		g.drawLine(0, 0, frameSize, 0); //TOP
 		g.drawLine(0, frameSize, frameSize, frameSize); //BOTTOM
 		g.drawLine(0, 0, 0, frameSize); //LEFT
 		g.drawLine(frameSize, 0, frameSize, frameSize); //RIGHT
+		g.setColor(Color.black);
+		g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,(int)(squareSize/1.5)));
+		for(String s:roomNames.keySet()){
+			Point p = roomNames.get(s);
+			g.drawString(s, (p.x*squareSize-s.length()*2), p.y*squareSize);
+		}
+		
+		
 		return out;
 	}
 }
