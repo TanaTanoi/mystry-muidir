@@ -69,7 +69,7 @@ public class CluedoGame {
 			if (i == players.size()) {
 				i = 0;
 			}
-		}while (!playerTurn(p) && remainingPlayers > 1 );
+		}while (playerTurn(p) && remainingPlayers >= 1 );
 		control.displayWinner(p);
 	}
 
@@ -103,7 +103,7 @@ public class CluedoGame {
 		if(p.getCurrentRoom()==RoomName.CELLAR){
 			return makeAccusation(p);
 		}else if(p.getCurrentRoom()!=null){					//make suggestion
-			makeSuggestion(p);
+			//makeSuggestion(p);
 			return true;
 		}
 		return true;

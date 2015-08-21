@@ -160,7 +160,7 @@ public class Control {
 			}
 		}while(!reachablePoints.contains(frame.clickedP));
 		System.out.println("Returning " +frame.clickedP.toString());
-
+		this.reachablePoints.clear();
 		return frame.clickedP;
 	}
 
@@ -280,11 +280,15 @@ public class Control {
 			Point p = roomNames.get(s);
 			g.drawString(formatString(s), (int) (p.x*squareSize-s.length()*3*NAME_FONT_SCALE), p.y*squareSize);
 		}
-
-
 		return out;
 	}
 
+	/**
+	 * Sets the squares in the reachableRooms to highlighted on the board
+	 * Also changes the colour of the highlight everytime it is called
+	 * @param g
+	 * @param squareSize
+	 */
 	private void highlightSquares(Graphics2D g,int squareSize){
 		HIGHLIGHT_COLOR =new Color(HIGHLIGHT_COLOR.getRed()+HIGHLIGHT_PHASE,
 				HIGHLIGHT_COLOR.getGreen()+HIGHLIGHT_PHASE,

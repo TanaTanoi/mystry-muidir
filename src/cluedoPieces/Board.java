@@ -209,7 +209,7 @@ public class Board {
 	 * @param stepsLeft
 	 */
 	private void reachableRec(Map<Point,Integer> visited, int x, int y, int stepsLeft){
-		if(stepsLeft<=0)return;												//base case #1, if no steps left
+		if(stepsLeft<0)return;												//base case #1, if no steps left
 		stepsLeft--;
 		if(x>=boardSize||x<0||y>=boardSize||y<0)return;						//case case #2, if out of bounds
 		if(board[x][y] != Square.OPEN&&!doors.contains(board[x][y]))return;	//base case #3, if not valid square
