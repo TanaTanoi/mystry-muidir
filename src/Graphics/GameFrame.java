@@ -27,7 +27,7 @@ import cluedoPieces.Board;
 
 
 public class GameFrame extends JFrame implements MouseListener, MouseMotionListener{
-	private static final int BOARD_TOP = 61;
+	private static final int BOARD_TOP = 60;
 	private static final int BOARD_LEFT= 15;
 	private static final int MINIMUM_SIZE = 400;
 
@@ -88,7 +88,7 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		//TODO write code for detecting what square the mouse is released on
+		//TODO write code for detecting what square the mouse is released on\
 		Point p = findCoords(e.getX(),e.getY());
 		System.out.println("X = "+p.x+" Y= "+p.y);
 		clickedP = p;

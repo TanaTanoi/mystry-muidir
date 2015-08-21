@@ -21,6 +21,7 @@ import cluedoGame.Control;
 
 import javax.swing.JMenuBar;
 
+import cluedoPieces.Board;
 import cluedoPieces.Player;
 
 
@@ -40,7 +41,7 @@ public class GameCanvas extends JPanel{
 		public void run() {
 			while(1==1) {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(500);
 					repaint();
 		} catch(InterruptedException e) {}
 		} } }
@@ -60,7 +61,7 @@ public class GameCanvas extends JPanel{
 	private void paintBackground(Graphics2D g){
 		int width = (int)getSize().getWidth();
 		int height = (int)getSize().getHeight();
-		int boardSize = Math.min(width, height)-25;
+		int boardSize = Math.min(width, height)-Board.boardSize;
 		Color c1 = new Color(0,20,0);
 		Color c2 = new Color(0,50,0);
 		Point2D p = new Point2D.Float(300, 300);
@@ -75,7 +76,7 @@ public class GameCanvas extends JPanel{
 	public int getSquareSize(){
 		int width = (int)getSize().getWidth();
 		int height = (int)getSize().getHeight();
-		return (Math.min(width, height)-25)/25;
+		return (Math.min(width, height)-Board.boardSize)/Board.boardSize;
 	}
 
 	public void drawPlayer(Set<Player> players){
