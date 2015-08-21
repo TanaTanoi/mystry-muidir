@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.Set;
 import java.util.HashSet;
 
+import cluedoPieces.Card.Person;
 import cluedoPieces.Room.RoomName;
 
 public class Player {
@@ -13,6 +14,7 @@ public class Player {
 	private String name;// Players name
 	private boolean active = true;
 	private RoomName room;
+	private Person person;
 	public Player(String name){
 		hand = new HashSet<Card>();
 		this.name = name;
@@ -64,6 +66,16 @@ public class Player {
 	 */
 	public RoomName getCurrentRoom(){
 		return room;
+	}
+	
+	/**
+	 * Sets the character this player wishes to play as
+	 * @param ch The string of the character to be selected (Not case sensitive)
+	 */
+	public void setCharacter(String ch){
+		try {
+			person = Person.valueOf(ch.toUpperCase());
+		}catch(IllegalArgumentException e){}
 	}
 
 	public String getName(){
