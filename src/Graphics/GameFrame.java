@@ -58,12 +58,15 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		menuBar.add(gameMenu);
 		JMenuItem newGameItem = new JMenuItem(new AbstractAction("N|New Game") {
 			public void actionPerformed(ActionEvent e){
-				//TODO open players window
-				new PlayerWindow();
+				startNewGame();
 			}
 		});
 		gameMenu.add(newGameItem);
 		this.setJMenuBar(menuBar);
+	}
+	
+	private void startNewGame(){
+		new PlayerWindow(this);
 	}
 
 	private void addButtons(){

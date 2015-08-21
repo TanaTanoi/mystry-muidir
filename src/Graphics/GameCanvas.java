@@ -82,4 +82,5 @@ public class GameCanvas extends JPanel{
 	public void drawPlayer(Set<Player> players){
 
 	}
+	
 }
