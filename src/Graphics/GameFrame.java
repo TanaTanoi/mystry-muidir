@@ -31,12 +31,15 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	private static final int BOARD_LEFT= 15;
 	private static final int MINIMUM_SIZE = 400;
 
+
+	public Control control;
 	public Point clickedP = null;
 
 	GameCanvas canvas;
 	Board board;
 	public GameFrame(Control control){
 		super("Cluedo");
+		this.control = control;
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addMenuBar();
@@ -64,7 +67,7 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		gameMenu.add(newGameItem);
 		this.setJMenuBar(menuBar);
 	}
-	
+
 	private void startNewGame(){
 		new PlayerWindow(this);
 	}

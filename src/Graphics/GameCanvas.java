@@ -41,7 +41,7 @@ public class GameCanvas extends JPanel{
 		public void run() {
 			while(1==1) {
 				try {
-					Thread.sleep(500);
+					Thread.sleep(50);
 					repaint();
 		} catch(InterruptedException e) {}
 		} } }
@@ -82,5 +82,4 @@ public class GameCanvas extends JPanel{
 	public void drawPlayer(Set<Player> players){
 
 	}
-	
 }

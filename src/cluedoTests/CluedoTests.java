@@ -153,7 +153,7 @@ public class CluedoTests {
 		assertTrue(rooms.size() == 10);								//all 9 rooms
 		rooms.clear();												//reset
 
-		rooms.addAll(b.reachableRooms(new Point(9,9),3));			//should find ballroom
+		rooms.addAll(b.reachableRooms(new Point(9,9),4));			//should find ballroom
 		assertTrue(rooms.contains(RoomName.BALLROOM));
 		assertTrue(rooms.size() == 1);								//and only ballroom
 	}

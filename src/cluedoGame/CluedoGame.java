@@ -3,6 +3,7 @@ package cluedoGame;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import Graphics.*;
@@ -15,7 +16,7 @@ public class CluedoGame {
 
 	private Board board;
 	private Deck deck;
-	private ArrayList<Player> players;
+	private List<Player> players;
 	private int remainingPlayers;
 	private static String default_layout = "bin/assets/layout.txt";
 	public static void main(String[] args) {
@@ -27,6 +28,8 @@ public class CluedoGame {
 	}
 
 	public CluedoGame() {
+		board = new Board(default_layout);
+		control = new Control(board);
 		startGame();
 
 	}
@@ -37,21 +40,21 @@ public class CluedoGame {
 	 * loop
 	 */
 	private void startGame() {
-		board = new Board(default_layout);
-		control = new Control(board);
 		//frame = new GameFrame(control);
-		players = new ArrayList<Player>();
-		int playerNum = 0;
+		//players = new ArrayList<Player>();
+		//int playerNum = 0;
 		// Get number of players
-		playerNum = control.getTotalPlayers();
-		remainingPlayers = playerNum;
-		System.out.println(playerNum);
+		//playerNum = control.getTotalPlayers();
+		//remainingPlayers = playerNum;
+		//System.out.println(playerNum);
 		//Create every player and assign their positions
-		for (int i = 1; i <= playerNum; i++) {
-			String name = control.requestPlayerName(i);
-			Player newP = new Player(name);
-			newP.setPos(board.getStartingPoint(i));
-			players.add(newP);
+
+		players = control.requestPlayers();
+		remainingPlayers= players.size();
+		System.out.println("PlayerNum = "+remainingPlayers);
+		for (int i = 0; i < remainingPlayers; i++) {
+			players.get(i).setPos(board.getStartingPoint(i+1));
+
 		}
 		//Display players on GUI
 		control.displayPlayers(players);

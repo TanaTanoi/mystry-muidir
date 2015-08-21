@@ -24,7 +24,7 @@ import cluedoPieces.Board;
 import cluedoPieces.Player;
 
 public class PlayerWindow extends JDialog{
-	JFrame local;
+	GameFrame local;
 	ButtonGroup characters;
 	JPanel radioButtons;
 	JPanel nameEntry;
@@ -36,7 +36,7 @@ public class PlayerWindow extends JDialog{
 	String buttonSelected;
 	Font font = new Font(Font.MONOSPACED,Font.PLAIN,15);
 
-	public PlayerWindow(JFrame local){
+	public PlayerWindow(GameFrame local){
 		super(local, "Player Selection");
 		this.local = local;
 		players = new ArrayList<Player>();
@@ -49,12 +49,12 @@ public class PlayerWindow extends JDialog{
 		setCompletionPanel();
 
 		displayComponents();
-		
+
 		setResizable(false);
 		setVisible(true);
 	}
-	
-	
+
+
 	/**
 	 * Code for bottom left panel, just submitting players arraylist
 	 */
@@ -65,6 +65,7 @@ public class PlayerWindow extends JDialog{
 			public void actionPerformed(ActionEvent e){
 				if (players.size() >= 2){
 					//TODO send players to control class
+					local.control.setPlayers(players);
 				} else{// if the minimum number of players required is not met
 					JOptionPane.showMessageDialog(local,
 						    "Game requires a minimum of 2 players");
@@ -75,7 +76,7 @@ public class PlayerWindow extends JDialog{
 		completionPanel.add(new JPanel());
 		completionPanel.add(new JPanel());
 		completionPanel.add(startGame);
-		completionPanel.add(new JPanel());	
+		completionPanel.add(new JPanel());
 	}
 
 	/**
@@ -90,7 +91,7 @@ public class PlayerWindow extends JDialog{
 		add(nameEntry);
 		add(completionPanel);
 	}
-	
+
 	/**
 	 * Code for the player name text field and add player button, does checking of other
 	 * fields to ensure that there are not too many players and that no character is picked twice
@@ -112,7 +113,7 @@ public class PlayerWindow extends JDialog{
 				else if (nameField.getText().length() < 3){
 					JOptionPane.showMessageDialog(local,
 						    "Please enter a player name");
-				} 
+				}
 				else if (picked.contains(buttonSelected)){
 					JOptionPane.showMessageDialog(local,
 						    "Cannot have a character picked more than once");
@@ -175,7 +176,7 @@ public class PlayerWindow extends JDialog{
 		scarlet.setSelected(true);
 		buttonSelected = "Scarlett";
 	}
-	
+
 	/**
 	 * used by radio buttons to save the last selected character
 	 * @param p String of the character represented by the radio button

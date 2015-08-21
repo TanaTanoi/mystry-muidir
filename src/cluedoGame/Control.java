@@ -2,6 +2,7 @@ package cluedoGame;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +35,6 @@ import java.awt.Font;
 public class Control {
 
 	Player currentPlayer;
-	List<Player> players;
 	Board b;
 	GameFrame frame;
 
@@ -46,14 +46,21 @@ public class Control {
 	private static final Color ROOM_COLOR = new Color(212,197,200);
 	private static final Color WALL_COLOR = new Color(130,100,100);
 	private static final Color GRID_COLOR = new Color(100,10,10);
-	/*The colors of the grid, relative to the square it is on*/
+	/*Controls the color and color change of highlighted squares*/
 	private static Color HIGHLIGHT_COLOR = new Color(230,230,80);
-	private static int HIGHLIGHT_PHASE = -6;
+	private static int HIGHLIGHT_PHASE = -2;
+	/*The colors of the grid, relative to the square it is on*/
 	private static final int GRID_COLOR_OFFSET = -10;
 	private static final double NAME_FONT_SCALE = 0.6;
 	Map<String,Point> roomNames;// = b.getRoomCenters();
 
 	private Set<Point> reachablePoints = new HashSet<Point>();
+
+	private List<Player> players;// = new ArrayList<Player>();
+
+	public void setPlayers(List<Player> players){
+		this.players = players;
+	}
 
 	/**
 	 * Passes in the board to allow the frame to construct a background image
@@ -108,9 +115,16 @@ public class Control {
 	 * @param n
 	 * @return
 	 */
-	public String requestPlayerName(int n){
-		//TODO
-		return "dave";
+	public List<Player> requestPlayers(){
+		while(players==null){
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return players;
 	}
 
 	/**
@@ -295,10 +309,12 @@ public class Control {
 				HIGHLIGHT_COLOR.getBlue()+HIGHLIGHT_PHASE);
 		if(HIGHLIGHT_COLOR.getRed()>230){
 			HIGHLIGHT_PHASE*=-1;
-		}else if(HIGHLIGHT_COLOR.getRed()<170){
+		}else if(HIGHLIGHT_COLOR.getRed()<190){
 			HIGHLIGHT_PHASE*=-1;
 		}
-		for(Point p:reachablePoints){
+		Set<Point> localPoints = new HashSet<Point>();//avoid concurrent modification of reachablePoints
+		localPoints.addAll(reachablePoints);
+		for(Point p:localPoints){
 			drawSquareGrid(p.x, p.y, HIGHLIGHT_COLOR, g, squareSize);
 
 		}
