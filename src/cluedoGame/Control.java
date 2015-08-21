@@ -2,6 +2,8 @@ package cluedoGame;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +13,7 @@ import Graphics.GameFrame;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+
 import cluedoPieces.Board;
 import cluedoPieces.Card;
 import cluedoPieces.CharacterCard;
@@ -18,6 +21,7 @@ import cluedoPieces.Player;
 import cluedoPieces.Room;
 import cluedoPieces.RoomCard;
 import cluedoPieces.WeaponCard;
+
 import java.awt.Font;
 
 /**
@@ -43,9 +47,14 @@ public class Control {
 	private static final Color WALL_COLOR = new Color(130,100,100);
 	private static final Color GRID_COLOR = new Color(100,10,10);
 	/*The colors of the grid, relative to the square it is on*/
+	private static Color HIGHLIGHT_COLOR = new Color(230,230,80);
+	private static int HIGHLIGHT_PHASE = -6;
 	private static final int GRID_COLOR_OFFSET = -10;
 	private static final double NAME_FONT_SCALE = 0.6;
 	Map<String,Point> roomNames;// = b.getRoomCenters();
+
+	private Set<Point> reachablePoints = new HashSet<Point>();
+
 	/**
 	 * Passes in the board to allow the frame to construct a background image
 	 * @param board
@@ -138,7 +147,7 @@ public class Control {
 	 */
 	public Point displayPlayerMove(Set<Point> reachablePoints, Set<Room.RoomName> reachableRooms){
 		System.out.println("Asking for move");
-		int x,y;
+		this.reachablePoints = reachablePoints;
 		do{
 			frame.clickedP = null;
 
@@ -149,15 +158,9 @@ public class Control {
 					e.printStackTrace();
 				}
 			}
-			x = (int)frame.clickedP.getX();
-			y = (int)frame.clickedP.getY();
-			//if(x>0&&y>0&&x<Board.boardSize&&y<Board.boardSize&&)
-		//}while((!(x<0)&&!(y<0)&&!(x>Board.boardSize)&&!(y>Board.boardSize))
-			//	&&(b.getSquare(x, y)==Board.Square.OPEN)&&reachablePoints.contains(frame.clickedP));
-				//(x <0||y<0||x>Board.boardSize||y>Board.boardSize)
-				//||b.getSquare(x, y)!=Board.Square.OPEN||!reachablePoints.contains(frame.clickedP));
 		}while(!reachablePoints.contains(frame.clickedP));
 		System.out.println("Returning " +frame.clickedP.toString());
+
 		return frame.clickedP;
 	}
 
@@ -258,6 +261,7 @@ public class Control {
 		g.fillRect(0,0, 1000, 1000); //Draws background of board
 
 		drawWalls(g,frameSize);
+		highlightSquares(g, squareSize);
 		g.setStroke(new BasicStroke(1));
 		g.setColor(GRID_COLOR);
 		/*for (int i = 1; i < Board.boardSize-1; i++){ //Draws grid over top
@@ -274,13 +278,36 @@ public class Control {
 		g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,(int)(squareSize*NAME_FONT_SCALE)));
 		for(String s:roomNames.keySet()){
 			Point p = roomNames.get(s);
-			g.drawString(formatString(s), (p.x*squareSize-s.length()*2), p.y*squareSize);
+			g.drawString(formatString(s), (int) (p.x*squareSize-s.length()*3*NAME_FONT_SCALE), p.y*squareSize);
 		}
 
 
 		return out;
 	}
 
+	private void highlightSquares(Graphics2D g,int squareSize){
+		HIGHLIGHT_COLOR =new Color(HIGHLIGHT_COLOR.getRed()+HIGHLIGHT_PHASE,
+				HIGHLIGHT_COLOR.getGreen()+HIGHLIGHT_PHASE,
+				HIGHLIGHT_COLOR.getBlue()+HIGHLIGHT_PHASE);
+		if(HIGHLIGHT_COLOR.getRed()>230){
+			HIGHLIGHT_PHASE*=-1;
+		}else if(HIGHLIGHT_COLOR.getRed()<170){
+			HIGHLIGHT_PHASE*=-1;
+		}
+		for(Point p:reachablePoints){
+			drawSquareGrid(p.x, p.y, HIGHLIGHT_COLOR, g, squareSize);
+
+		}
+	}
+
+
+
+	/**
+	 * Formats the given string to follow basic English
+	 * convention.
+	 * @param s
+	 * @return
+	 */
 	private String formatString(String s){
 		StringBuilder sb = new StringBuilder();
 		sb.append(s.charAt(0));

@@ -20,17 +20,31 @@ import javax.swing.JPanel;
 import cluedoGame.Control;
 
 import javax.swing.JMenuBar;
+
 import cluedoPieces.Player;
 
 
 public class GameCanvas extends JPanel{
 	Control control;
-	
+
 	public GameCanvas(Control control){
 		super();
 		this.control = control;
+
+		Timer t = new Timer();
+		t.start();
 	}
-	
+
+	public class Timer extends Thread {
+
+		public void run() {
+			while(1==1) {
+				try {
+					Thread.sleep(100);
+					repaint();
+		} catch(InterruptedException e) {}
+		} } }
+
 	@Override
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
@@ -57,14 +71,14 @@ public class GameCanvas extends JPanel{
 		g.fillRect(getX(), getY(), width, height); // draw rect the size of the current window as background
 		g.drawImage(control.getBoardImage(boardSize), 10,10,boardSize,boardSize,this); //draw the board itself, leaving space for menu and cards
 	}
-	
+
 	public int getSquareSize(){
 		int width = (int)getSize().getWidth();
 		int height = (int)getSize().getHeight();
 		return (Math.min(width, height)-25)/25;
 	}
-	
+
 	public void drawPlayer(Set<Player> players){
-		
+
 	}
 }
