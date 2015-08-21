@@ -78,7 +78,6 @@ public class Board {
 		board = new Square[boardSize][boardSize];
 		this.loadLegend();
 		this.loadLayout();
-		this.mapDoors();
 	}
 
 	/**
@@ -110,6 +109,10 @@ public class Board {
 	 */
 	private void loadLayout(){
 		startingPoints = new Point[6];
+		doorMap = new HashMap<String,Set<Point>>();
+		for(RoomType r: RoomType.values()){
+			doorMap.put(r.toString(), new HashSet<Point>());
+		}
 		if(layoutLegend.isEmpty())
 			throw new RuntimeException("Layout legend has not been loaded!");//TODO as above-above
 		try{
@@ -126,6 +129,12 @@ public class Board {
 					String input = sc2.next();
 					//					System.out.print(input + "|");
 					board[x][y] = layoutLegend.get(input);
+					if(board[x][y].toString().contains("DOOR")){
+						String title = board[x][y].toString();
+						title = title.substring(0, title.length()-5);
+						doorMap.get(title).add(new Point(x,y));
+
+					}
 					if (Character.isDigit(input.charAt(0))){
 						int num = Integer.parseInt(input)-1;
 						startingPoints[num] = new Point(x,y);
@@ -142,22 +151,6 @@ public class Board {
 		}catch(IOException e){
 			throw new RuntimeException("Missing layout.txt file!");//TODO find better exception
 
-		}
-	}
-
-	private void mapDoors(){
-		doorMap = new HashMap<String,Set<Point>>();
-		for(RoomType r: RoomType.values()){
-			doorMap.put(r.toString(), new HashSet<Point>());
-		}
-		for (int x = 0; x < board.length; x++){
-			for (int y = 0; y < board.length-1; y++){
-				if(board[x][y].toString().contains("DOOR")){
-					Point p = new Point(y, x);
-					String title = board[x][y].toString();
-					doorMap.get(title.substring(0, title.length()-5)).add(p);
-				}
-			}
 		}
 	}
 
@@ -250,7 +243,7 @@ public class Board {
 	 * @param stepsLeft
 	 */
 	private void reachableRoomsRec(Set<Room.RoomName> reachable, Map<Point,Integer> visited, int x, int y, int stepsLeft){
-		if(stepsLeft<=1)return;												//base case #1, if no steps left
+		if(stepsLeft<=0)return;												//base case #1, if no steps left
 		stepsLeft--;
 		if(x>=boardSize||x<0||y>=boardSize||y<0)return;						//case case #2, if out of bounds
 		if(board[x][y]==Square.CELLAR) reachable.add(Room.RoomName.CELLAR);
@@ -430,7 +423,11 @@ public class Board {
 		if(p.x>boardSize||p.y>boardSize||p.x<0||p.y<0)throw new IllegalArgumentException("Point must be within board area");
 		Square tile = board[p.x][p.y];
 		if(!(doors.contains(tile)||tile==Square.OPEN)){	//if room
-			return Room.RoomName.valueOf(board[p.x][p.y].toString());
+			try{
+				return Room.RoomName.valueOf(board[p.x][p.y].toString());
+			}catch(IllegalArgumentException e){
+				return null;
+			}
 		}else{											//if not room
 			return null;
 		}

@@ -52,11 +52,13 @@ public class Control {
 	/*The colors of the grid, relative to the square it is on*/
 	private static final int GRID_COLOR_OFFSET = -10;
 	private static final double NAME_FONT_SCALE = 0.6;
-	Map<String,Point> roomNames;// = b.getRoomCenters();
+	Map<String,Point> roomNames;
 
 	private Set<Point> reachablePoints = new HashSet<Point>();
-
+	private Set<String> reachableRoomNames = new HashSet<String>();
 	private List<Player> players;// = new ArrayList<Player>();
+
+	private int squareSize =10;
 
 	public void setPlayers(List<Player> players){
 		this.players = players;
@@ -120,7 +122,6 @@ public class Control {
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -159,12 +160,14 @@ public class Control {
 	 * @param reachableRooms
 	 * @return - Point the player has selected to move to (including room points) or null for other options.
 	 */
-	public Point displayPlayerMove(Set<Point> reachablePoints, Set<Room.RoomName> reachableRooms){
+	public Point displayPlayerMove(Set<Point> reachablePoints, Set<Room.RoomName> reachableRooms,Player p){
 		System.out.println("Asking for move");
 		this.reachablePoints = reachablePoints;
+		for(Room.RoomName rn:reachableRooms){
+			reachableRoomNames.add(rn.toString());
+		}
 		do{
 			frame.clickedP = null;
-
 			while(frame.clickedP==null){
 				try {
 					Thread.sleep(50);
@@ -172,9 +175,15 @@ public class Control {
 					e.printStackTrace();
 				}
 			}
-		}while(!reachablePoints.contains(frame.clickedP));
+			Room.RoomName possibleRoom = b.getRoom(frame.clickedP);
+		}while(!reachablePoints.contains(frame.clickedP)&&
+				(b.getRoom(frame.clickedP)==null||
+				!reachableRoomNames.contains(b.getRoom(frame.clickedP).toString()))
+				);
 		System.out.println("Returning " +frame.clickedP.toString());
+		movePlayerAnimation(p, frame.clickedP,squareSize);
 		this.reachablePoints.clear();
+		this.reachableRoomNames.clear();
 		return frame.clickedP;
 	}
 
@@ -185,7 +194,6 @@ public class Control {
 	 * @param c
 	 */
 	public void displayRefutedCard(Player p, Card c){
-
 		//TODO
 	}
 	/**
@@ -268,7 +276,7 @@ public class Control {
 	 * @return
 	 */
 	public BufferedImage getBoardImage(int frameSize){
-		int squareSize = frameSize/Board.boardSize;
+		this.squareSize = frameSize/Board.boardSize;
 		BufferedImage out = new BufferedImage(squareSize*Board.boardSize, squareSize*Board.boardSize, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g= (Graphics2D)out.getGraphics();
 		g.setColor(new Color(180,10,10));
@@ -288,13 +296,45 @@ public class Control {
 		g.drawLine(0, frameSize, frameSize, frameSize); //BOTTOM
 		g.drawLine(0, 0, 0, frameSize); //LEFT
 		g.drawLine(frameSize, 0, frameSize, frameSize); //RIGHT
-		g.setColor(Color.black);
+
+		drawPlayers(g, squareSize);
 		g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,(int)(squareSize*NAME_FONT_SCALE)));
 		for(String s:roomNames.keySet()){
+			if(reachableRoomNames.contains(s)){
+				g.setColor(HIGHLIGHT_COLOR.darker());
+			}else{
+				g.setColor(Color.black);
+			}
 			Point p = roomNames.get(s);
 			g.drawString(formatString(s), (int) (p.x*squareSize-s.length()*3*NAME_FONT_SCALE), p.y*squareSize);
 		}
 		return out;
+	}
+
+	private void drawPlayers(Graphics2D g, int squareSize){//TODO fix this up
+		if(players==null||players.isEmpty())return;
+			for(Player p: players){
+			g.setColor(Color.PINK);
+			g.drawOval((int)p.fakeX, (int)p.fakeY, squareSize , squareSize);
+		}
+	}
+
+	private void movePlayerAnimation(Player p,Point newPos,int squareSize){
+		System.out.println(p.getPos().toString() + " "+ newPos.toString());
+		p.fakeX = p.getPos().x*squareSize;//TODO this isn't good because it doens't work with rescaling
+		p.fakeY = p.getPos().y*squareSize;
+		double incX = (newPos.x-p.getPos().x)*squareSize/10;
+		double incY = (newPos.y-p.getPos().y)*squareSize/10;
+		for(int i = 0; i < 10;i++){
+			p.fakeX+=incX;
+			p.fakeY+=incY;
+			System.out.println(p.fakeX + " "+ p.fakeY);
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

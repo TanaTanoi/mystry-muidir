@@ -11,6 +11,8 @@ public class Player {
 
 	Set<Card> hand;
 	private Point pos;
+	public int fakeX;
+	public int fakeY;
 	private String name;// Players name
 	private boolean active = true;
 	private RoomName room;
@@ -58,7 +60,7 @@ public class Player {
 	public void setRoom(RoomName r){
 		room = r;
 	}
-	
+
 	/**
 	 * Returns a Room.RoomName enum signifying what room
 	 * the current player is in.
@@ -67,7 +69,7 @@ public class Player {
 	public RoomName getCurrentRoom(){
 		return room;
 	}
-	
+
 	/**
 	 * Sets the character this player wishes to play as
 	 * @param ch The string of the character to be selected (Not case sensitive)

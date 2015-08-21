@@ -40,15 +40,6 @@ public class CluedoGame {
 	 * loop
 	 */
 	private void startGame() {
-		//frame = new GameFrame(control);
-		//players = new ArrayList<Player>();
-		//int playerNum = 0;
-		// Get number of players
-		//playerNum = control.getTotalPlayers();
-		//remainingPlayers = playerNum;
-		//System.out.println(playerNum);
-		//Create every player and assign their positions
-
 		players = control.requestPlayers();
 		remainingPlayers= players.size();
 		System.out.println("PlayerNum = "+remainingPlayers);
@@ -72,7 +63,7 @@ public class CluedoGame {
 			if (i == players.size()) {
 				i = 0;
 			}
-		}while (playerTurn(p) && remainingPlayers >= 1 );
+		}while (playerTurn(p) && remainingPlayers > 1 );
 		control.displayWinner(p);
 	}
 
@@ -96,7 +87,7 @@ public class CluedoGame {
 			reachableRooms	.addAll(board.reachableRooms(p.getCurrentRoom(), playerRoll));
 		}
 		//Pass movements into the view and await a selection from the user
-		Point playerSelection = control.displayPlayerMove(reachablePoints, reachableRooms);
+		Point playerSelection = control.displayPlayerMove(reachablePoints, reachableRooms,p);
 		if(playerSelection!=null){//If the player made a point selection, move there
 			RoomName room = board.getRoom(playerSelection);
 			p.setPos(playerSelection);
