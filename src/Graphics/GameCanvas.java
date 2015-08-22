@@ -39,7 +39,7 @@ public class GameCanvas extends JPanel{
 	public class Timer extends Thread {
 
 		public void run() {
-			while(1==1) {
+			while(true) {
 				try {
 					Thread.sleep(50);
 					repaint();

@@ -11,8 +11,8 @@ public class Player {
 
 	Set<Card> hand;
 	private Point pos;
-	public int fakeX;
-	public int fakeY;
+	public double fakeX;
+	public double fakeY;
 	private String name;// Players name
 	private boolean active = true;
 	private RoomName room;
@@ -77,9 +77,12 @@ public class Player {
 	public void setCharacter(String ch){
 		try {
 			person = Person.valueOf(ch.toUpperCase());
-		}catch(IllegalArgumentException e){}
+		}catch(IllegalArgumentException e){throw new IllegalArgumentException (ch + " is not a valid character.");}
 	}
-
+	
+	public Person getPerson(){
+		return person;
+	}
 	public String getName(){
 		return name;
 	}
@@ -103,6 +106,8 @@ public class Player {
 	 */
 	public void setPos(Point p){
 		pos = p;
+		fakeX = p.x;
+		fakeY = p.y;
 	}
 	public Point getPos(){return pos;}
 }

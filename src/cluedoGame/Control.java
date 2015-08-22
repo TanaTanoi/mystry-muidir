@@ -51,6 +51,7 @@ public class Control {
 	private static int HIGHLIGHT_PHASE = -2;
 	/*The colors of the grid, relative to the square it is on*/
 	private static final int GRID_COLOR_OFFSET = -10;
+	/*The scale of the names of the rooms */
 	private static final double NAME_FONT_SCALE = 0.6;
 	Map<String,Point> roomNames;
 
@@ -59,7 +60,7 @@ public class Control {
 	private List<Player> players;// = new ArrayList<Player>();
 
 	private int squareSize =10;
-
+	private static final double ANIMATION_STEPS = 10;
 	public void setPlayers(List<Player> players){
 		this.players = players;
 	}
@@ -74,15 +75,6 @@ public class Control {
 		frame = new GameFrame(this);
 	}
 
-	/**
-	 * Asks the user for the number of players and
-	 * returns it to the cluedogame
-	 * @return
-	 */
-	public int getTotalPlayers(){
-		//TODO actual content
-		return 1;
-	}
 	/**
 	 * Asks the current player for a weapon card, for use with accusations and
 	 * suggestions.
@@ -175,15 +167,18 @@ public class Control {
 					e.printStackTrace();
 				}
 			}
-			Room.RoomName possibleRoom = b.getRoom(frame.clickedP);
+			//Room.RoomName possibleRoom = b.getRoom(frame.clickedP);
 		}while(!reachablePoints.contains(frame.clickedP)&&
 				(b.getRoom(frame.clickedP)==null||
 				!reachableRoomNames.contains(b.getRoom(frame.clickedP).toString()))
 				);
 		System.out.println("Returning " +frame.clickedP.toString());
-		movePlayerAnimation(p, frame.clickedP,squareSize);
+		movePlayerAnimation(p, frame.clickedP);
 		this.reachablePoints.clear();
 		this.reachableRoomNames.clear();
+		if(b.getRoom(frame.clickedP)!=null&&b.getRoom(frame.clickedP)==p.getCurrentRoom()){//if they clicked their current room, they want to make a suggestion
+			return null;
+		}
 		return frame.clickedP;
 	}
 
@@ -311,24 +306,33 @@ public class Control {
 		return out;
 	}
 
-	private void drawPlayers(Graphics2D g, int squareSize){//TODO fix this up
+	/**
+	 * Draws the players stored in the players global list.
+	 * @param g
+	 * @param squareSize
+	 */
+	private void drawPlayers(Graphics2D g, int squareSize){
 		if(players==null||players.isEmpty())return;
 			for(Player p: players){
 			g.setColor(Color.PINK);
-			g.drawOval((int)p.fakeX, (int)p.fakeY, squareSize , squareSize);
+			g.drawOval((int)(p.fakeX*squareSize), (int)(p.fakeY*squareSize), squareSize , squareSize);
 		}
 	}
-
-	private void movePlayerAnimation(Player p,Point newPos,int squareSize){
+	/**
+	 * Sets the players animation position (fakeX/Y) to a variable amount across
+	 * the old position (p.getPos()) and newPos.
+	 * @param p - Player who is being moved
+	 * @param newPos - The position this player is traveling to
+	 */
+	private void movePlayerAnimation(Player p,Point newPos){
 		System.out.println(p.getPos().toString() + " "+ newPos.toString());
-		p.fakeX = p.getPos().x*squareSize;//TODO this isn't good because it doens't work with rescaling
-		p.fakeY = p.getPos().y*squareSize;
-		double incX = (newPos.x-p.getPos().x)*squareSize/10;
-		double incY = (newPos.y-p.getPos().y)*squareSize/10;
+		p.fakeX = newPos.x;
+		p.fakeY = newPos.y;
+		double incX = (newPos.x-p.getPos().x)/ANIMATION_STEPS;
+		double incY = (newPos.y-p.getPos().y)/ANIMATION_STEPS;
 		for(int i = 0; i < 10;i++){
-			p.fakeX+=incX;
-			p.fakeY+=incY;
-			System.out.println(p.fakeX + " "+ p.fakeY);
+			p.fakeX=p.getPos().x+incX*i;
+			p.fakeY=p.getPos().y+incY*i;
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -339,7 +343,8 @@ public class Control {
 
 	/**
 	 * Sets the squares in the reachableRooms to highlighted on the board
-	 * Also changes the colour of the highlight everytime it is called
+	 * Also changes the colour of the highlight every time it is called,
+	 * (per tick in this case)
 	 * @param g
 	 * @param squareSize
 	 */
@@ -356,7 +361,6 @@ public class Control {
 		localPoints.addAll(reachablePoints);
 		for(Point p:localPoints){
 			drawSquareGrid(p.x, p.y, HIGHLIGHT_COLOR, g, squareSize);
-
 		}
 	}
 

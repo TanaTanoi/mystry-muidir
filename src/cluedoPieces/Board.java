@@ -253,7 +253,7 @@ public class Board {
 				visited.get(current)>stepsLeft)return;						//base case #4, if current square has gone further than here
 		visited.put(current, stepsLeft);
 
-		if(doors.contains(board[x][y]) && stepsLeft>=1){
+		if(doors.contains(board[x][y]) && stepsLeft>=0){
 			try{
 				reachable.add(Room.RoomName.valueOf(this.roomsDoor(board[x][y]).toString()));//may need cleaning, might be better if use of other enum
 			}catch(Exception e){}
@@ -293,7 +293,7 @@ public class Board {
 		default:
 			break;
 		}
-		toReturn.remove(room);//Remove self to prevent confusion
+		//toReturn.remove(room);//Remove self to prevent confusion
 
 		return toReturn;
 	}

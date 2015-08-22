@@ -95,7 +95,7 @@ public class CluedoGame {
 		}
 		//then make suggestion/accusation
 		if(p.getCurrentRoom()==RoomName.CELLAR){
-			return makeAccusation(p);
+			//return makeAccusation(p);
 		}else if(p.getCurrentRoom()!=null){					//make suggestion
 			//makeSuggestion(p);
 			return true;
