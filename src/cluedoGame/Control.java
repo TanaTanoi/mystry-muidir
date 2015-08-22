@@ -60,7 +60,7 @@ public class Control {
 	private List<Player> players;// = new ArrayList<Player>();
 
 	private int squareSize =10;
-	private static final double ANIMATION_STEPS = 10;
+	private static final double ANIMATION_STEPS = 10;//amount of ticks to take when moving a player
 	public void setPlayers(List<Player> players){
 		this.players = players;
 	}
@@ -153,6 +153,7 @@ public class Control {
 	 * @return - Point the player has selected to move to (including room points) or null for other options.
 	 */
 	public Point displayPlayerMove(Set<Point> reachablePoints, Set<Room.RoomName> reachableRooms,Player p){
+		currentPlayer = p;
 		System.out.println("Asking for move");
 		this.reachablePoints = reachablePoints;
 		for(Room.RoomName rn:reachableRooms){
@@ -167,7 +168,6 @@ public class Control {
 					e.printStackTrace();
 				}
 			}
-			//Room.RoomName possibleRoom = b.getRoom(frame.clickedP);
 		}while(!reachablePoints.contains(frame.clickedP)&&
 				(b.getRoom(frame.clickedP)==null||
 				!reachableRoomNames.contains(b.getRoom(frame.clickedP).toString()))
@@ -176,9 +176,6 @@ public class Control {
 		movePlayerAnimation(p, frame.clickedP);
 		this.reachablePoints.clear();
 		this.reachableRoomNames.clear();
-		if(b.getRoom(frame.clickedP)!=null&&b.getRoom(frame.clickedP)==p.getCurrentRoom()){//if they clicked their current room, they want to make a suggestion
-			return null;
-		}
 		return frame.clickedP;
 	}
 
@@ -313,9 +310,20 @@ public class Control {
 	 */
 	private void drawPlayers(Graphics2D g, int squareSize){
 		if(players==null||players.isEmpty())return;
+		g.setStroke(new BasicStroke(2));
 			for(Player p: players){
-			g.setColor(Color.PINK);
-			g.drawOval((int)(p.fakeX*squareSize), (int)(p.fakeY*squareSize), squareSize , squareSize);
+				g.setColor(new Color(p.getPerson().toString().toLowerCase().hashCode()));
+				if(currentPlayer.equals(p)){
+					g.fillOval((int)(p.fakeX*squareSize), (int)(p.fakeY*squareSize), squareSize , squareSize);
+					g.setColor(Color.black);
+					g.drawOval((int)(p.fakeX*squareSize), (int)(p.fakeY*squareSize), squareSize , squareSize);
+				}else{
+				
+					
+					g.drawOval((int)(p.fakeX*squareSize), (int)(p.fakeY*squareSize), squareSize , squareSize);
+				}
+			
+			
 		}
 	}
 	/**
