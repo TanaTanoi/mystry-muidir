@@ -1,8 +1,5 @@
 package cluedoGame;
-
-import java.awt.Point;
 import java.io.*;
-import java.util.Scanner;
 
 /**
  * This interface completely deals with the user interaction, both input and output

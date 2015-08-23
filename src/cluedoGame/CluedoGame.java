@@ -1,15 +1,11 @@
 package cluedoGame;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import Graphics.*;
 import cluedoPieces.*;
 import cluedoPieces.Room.RoomName;
-import cluedoPieces.Card.Person;
 public class CluedoGame {
 	private Control control;
 	//private GameFrame frame;
@@ -42,13 +38,10 @@ public class CluedoGame {
 	private void startGame() {
 		players = control.requestPlayers();
 		remainingPlayers= players.size();
-		System.out.println("PlayerNum = "+remainingPlayers);
 		for (int i = 0; i < remainingPlayers; i++) {
 			players.get(i).setPos(board.getStartingPoint(i+1));
 
 		}
-		//Display players on GUI
-		control.displayPlayers(players);
 		//Initialize deck with players
 		deck = new Deck(players);
 
@@ -57,8 +50,6 @@ public class CluedoGame {
 
 		// Main loop
 		do{
-			//board.printBoard(players);
-			//System.out.println(makeAccusation());
 			p = players.get(i++);
 			if (i == players.size()) {
 				i = 0;
@@ -79,20 +70,19 @@ public class CluedoGame {
 		int playerRoll = rollDie();
 		Set<Point> reachablePoints = new HashSet<Point>();
 		Set<Room.RoomName> reachableRooms = new HashSet<Room.RoomName>();
-		if(p.getCurrentRoom()==null){		//if player is not in a room, use position
+		if(p.getCurrentRoom()==null){		//if player is not in a room, use position method
 			reachablePoints	.addAll(board.reachablePoints(p.getPos(), playerRoll));
 			reachableRooms	.addAll(board.reachableRooms(p.getPos(), playerRoll));
-		}else{								//if a player is in a room, use room
+		}else{								//if a player is in a room, use room method
 			reachablePoints	.addAll(board.reachablePoints(p.getCurrentRoom(), playerRoll));
 			reachableRooms	.addAll(board.reachableRooms(p.getCurrentRoom(), playerRoll));
 		}
 		//Pass movements into the view and await a selection from the user
 		Point playerSelection = control.displayPlayerMove(reachablePoints, reachableRooms,p);
-		if(playerSelection!=null){//If the player made a point selection, move there
-			RoomName room = board.getRoom(playerSelection);
-			p.setPos(playerSelection);
-			p.setRoom(room);								//Room is null if they didn't select a room
-		}
+		RoomName room = board.getRoom(playerSelection);
+		p.setPos(playerSelection);
+		p.setRoom(room);								//Room is null if they didn't select a room
+		
 		//then make suggestion/accusation
 		if(p.getCurrentRoom()==RoomName.CELLAR){
 			//return makeAccusation(p);

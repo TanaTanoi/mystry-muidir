@@ -2,26 +2,15 @@ package cluedoGame;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import Graphics.GameFrame;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-
-import cluedoPieces.Board;
-import cluedoPieces.Card;
-import cluedoPieces.CharacterCard;
-import cluedoPieces.Player;
-import cluedoPieces.Room;
-import cluedoPieces.RoomCard;
-import cluedoPieces.WeaponCard;
+import cluedoPieces.*;
 
 import java.awt.Font;
 
@@ -47,8 +36,9 @@ public class Control {
 	private static final Color WALL_COLOR = new Color(130,100,100);
 	private static final Color GRID_COLOR = new Color(100,10,10);
 	/*Controls the color and color change of highlighted squares*/
-	private static Color HIGHLIGHT_COLOR = new Color(230,230,80);
+	private static final  Color HIGHLIGHT_COLOR = new Color(230,230,80);
 	private static int HIGHLIGHT_PHASE = -2;
+	private static int HIGHLIGHT_OFFSET = 0;
 	/*The colors of the grid, relative to the square it is on*/
 	private static final int GRID_COLOR_OFFSET = -10;
 	/*The scale of the names of the rooms */
@@ -120,16 +110,6 @@ public class Control {
 		return players;
 	}
 
-	/**
-	 * Displays the names of the players along side the portrait
-	 * and then continues once finished.
-	 * @param names
-	 */
-	public void displayPlayers(List<Player> players){
-		//TODO
-		this.players = players;
-
-	}
 	/**
 	 * Displays the given player's information on screen,
 	 * including their cards, name, dice roll, etc.
@@ -275,7 +255,7 @@ public class Control {
 		g.fillRect(0,0, 1000, 1000); //Draws background of board
 
 		drawWalls(g,frameSize);
-		highlightSquares(g, squareSize);
+		highlightSquares(g);
 		g.setStroke(new BasicStroke(1));
 		g.setColor(GRID_COLOR);
 		/*for (int i = 1; i < Board.boardSize-1; i++){ //Draws grid over top
@@ -289,7 +269,7 @@ public class Control {
 		g.drawLine(0, 0, 0, frameSize); //LEFT
 		g.drawLine(frameSize, 0, frameSize, frameSize); //RIGHT
 
-		drawPlayers(g, squareSize);
+		drawPlayers(g);
 		g.setFont(new Font(Font.MONOSPACED,Font.PLAIN,(int)(squareSize*NAME_FONT_SCALE)));
 		for(String s:roomNames.keySet()){
 			if(reachableRoomNames.contains(s)){
@@ -308,22 +288,27 @@ public class Control {
 	 * @param g
 	 * @param squareSize
 	 */
-	private void drawPlayers(Graphics2D g, int squareSize){
+	private void drawPlayers(Graphics2D g){
 		if(players==null||players.isEmpty())return;
 		g.setStroke(new BasicStroke(2));
 			for(Player p: players){
-				g.setColor(new Color(p.getPerson().toString().toLowerCase().hashCode()));
-				if(currentPlayer.equals(p)){
+				Color p_color = new Color(p.getPerson().toString().toLowerCase().hashCode());
+				
+				if(currentPlayer!=null&&currentPlayer.equals(p)){
+					Color h_p_color = new Color(
+							Math.min(255,Math.max(0, p_color.getRed()-HIGHLIGHT_OFFSET)),
+							Math.min(255,Math.max(0,p_color.getGreen()-HIGHLIGHT_OFFSET)),
+							Math.min(255,Math.max(0,p_color.getBlue()-HIGHLIGHT_OFFSET)));
+					//Main circle
+					g.setColor(h_p_color.brighter());
 					g.fillOval((int)(p.fakeX*squareSize), (int)(p.fakeY*squareSize), squareSize , squareSize);
 					g.setColor(Color.black);
+					//Outline
 					g.drawOval((int)(p.fakeX*squareSize), (int)(p.fakeY*squareSize), squareSize , squareSize);
 				}else{
-				
-					
-					g.drawOval((int)(p.fakeX*squareSize), (int)(p.fakeY*squareSize), squareSize , squareSize);
+					g.setColor(p_color);
+					g.drawOval((int)(p.fakeX*squareSize)+1, (int)(p.fakeY*squareSize)+1, squareSize-1 , squareSize-1);
 				}
-			
-			
 		}
 	}
 	/**
@@ -352,23 +337,24 @@ public class Control {
 	/**
 	 * Sets the squares in the reachableRooms to highlighted on the board
 	 * Also changes the colour of the highlight every time it is called,
-	 * (per tick in this case)
+	 * (per tick in this case).
 	 * @param g
 	 * @param squareSize
 	 */
-	private void highlightSquares(Graphics2D g,int squareSize){
-		HIGHLIGHT_COLOR =new Color(HIGHLIGHT_COLOR.getRed()+HIGHLIGHT_PHASE,
-				HIGHLIGHT_COLOR.getGreen()+HIGHLIGHT_PHASE,
-				HIGHLIGHT_COLOR.getBlue()+HIGHLIGHT_PHASE);
-		if(HIGHLIGHT_COLOR.getRed()>230){
+	private void highlightSquares(Graphics2D g){
+		Color H_FLASH =new Color(HIGHLIGHT_COLOR.getRed()+HIGHLIGHT_OFFSET,
+				HIGHLIGHT_COLOR.getGreen()+HIGHLIGHT_OFFSET,
+				HIGHLIGHT_COLOR.getBlue()+HIGHLIGHT_OFFSET);
+		HIGHLIGHT_OFFSET+=HIGHLIGHT_PHASE;
+		if(HIGHLIGHT_OFFSET>0){
 			HIGHLIGHT_PHASE*=-1;
-		}else if(HIGHLIGHT_COLOR.getRed()<190){
+		}else if(HIGHLIGHT_OFFSET<-40){
 			HIGHLIGHT_PHASE*=-1;
 		}
 		Set<Point> localPoints = new HashSet<Point>();//avoid concurrent modification of reachablePoints
 		localPoints.addAll(reachablePoints);
 		for(Point p:localPoints){
-			drawSquareGrid(p.x, p.y, HIGHLIGHT_COLOR, g, squareSize);
+			drawSquareGrid(p.x, p.y, H_FLASH, g, squareSize);
 		}
 	}
 
