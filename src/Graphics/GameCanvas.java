@@ -43,8 +43,8 @@ public class GameCanvas extends JPanel{
 				try {
 					Thread.sleep(50);
 					repaint();
-		} catch(InterruptedException e) {}
-		} } }
+				} catch(InterruptedException e) {}
+			} } }
 
 	@Override
 	protected void paintComponent(Graphics g){

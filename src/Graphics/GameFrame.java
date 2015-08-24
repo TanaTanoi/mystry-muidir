@@ -3,7 +3,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.GridLayout;
-
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -20,10 +19,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import com.sun.xml.internal.ws.message.MimeAttachmentSet;
+//import com.sun.xml.internal.ws.message.MimeAttachmentSet;
+
 
 import cluedoGame.Control;
 import cluedoPieces.Board;
+import cluedoPieces.Player;
 
 
 public class GameFrame extends JFrame implements MouseListener, MouseMotionListener{
@@ -46,12 +47,12 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		canvas = new GameCanvas(control);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
+		new AccusationWindow(this, new Player("dave"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setResizable(true);
 		setMinimumSize(new Dimension(MINIMUM_SIZE, MINIMUM_SIZE));
 		setVisible(true);
-		addButtons();
 	}
 
 

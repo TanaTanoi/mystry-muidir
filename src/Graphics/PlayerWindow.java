@@ -20,7 +20,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 
-import sun.awt.DisplayChangedListener;
+//import sun.awt.DisplayChangedListener;
 import cluedoPieces.Board;
 import cluedoPieces.Player;
 
@@ -71,7 +71,6 @@ public class PlayerWindow extends JDialog{
 		JButton startGame = new JButton(new AbstractAction("Start Game") {
 			public void actionPerformed(ActionEvent e){
 				if (players.size() >= 2){
-					//TODO send players to control class
 					local.control.setPlayers(players);
 					dispose();
 				} else{// if the minimum number of players required is not met
