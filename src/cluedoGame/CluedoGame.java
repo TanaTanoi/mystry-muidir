@@ -85,9 +85,9 @@ public class CluedoGame {
 		
 		//then make suggestion/accusation
 		if(p.getCurrentRoom()==RoomName.CELLAR){
-			//return makeAccusation(p);
+			return !makeAccusation(p);
 		}else if(p.getCurrentRoom()!=null){					//make suggestion
-			//makeSuggestion(p);
+			makeSuggestion(p);
 			return true;
 		}
 		return true;
@@ -99,13 +99,13 @@ public class CluedoGame {
 	 */
 	private void makeSuggestion(Player p){
 		RoomCard room= new RoomCard(p.getCurrentRoom());
-		WeaponCard weapon = control.requestWeaponCard();
-		CharacterCard ch = control.requestCharacterCard();
-		for(Player player: players){
-			if(p==player){continue;}
-			Card refutedCard = player.answerSuggestion(weapon,room,ch);
+		Card[] WandC = control.requestSuggestion(p);//TODO get return
+		if(WandC.length!=2){throw new IllegalArgumentException("Must have two cards, weapon and character!");}
+		for(Player otherPlayer: players){
+			if(p==otherPlayer){continue;}//skip primary player
+			Card refutedCard = otherPlayer.answerSuggestion(room,(WeaponCard)WandC[0],(CharacterCard)WandC[1]);
 			if(refutedCard!=null){
-				control.displayRefutedCard(player, refutedCard);
+				control.displayRefutedCard(otherPlayer, refutedCard);
 				break;
 			}
 		}
@@ -118,18 +118,9 @@ public class CluedoGame {
 	 * @return - If accusation is correct or not
 	 */
 	private boolean makeAccusation(Player p){
-		//Form proposal
-		RoomCard room= control.requestRoomCard();
-		WeaponCard weapon = control.requestWeaponCard();
-		CharacterCard ch = control.requestCharacterCard();
-		Card[] accusation = {room,weapon,ch};
-		if(deck.compareMurderCards(accusation)){	//if proposal is correct
-			return true;
-		}
-		//if they are wrong
-		remainingPlayers--;
-		p.setInactive();
-		return false;
+		Card[] cards = control.requestAccusation(p);
+		if(cards.length!=3){throw new IllegalArgumentException("Must have three cards,room, weapon and character!");}
+		return deck.compareMurderCards(cards);
 	}
 
 

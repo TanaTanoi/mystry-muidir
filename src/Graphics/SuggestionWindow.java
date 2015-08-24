@@ -19,10 +19,10 @@ public class SuggestionWindow extends JDialog{
 	private static final Font HEADER_FONT = new Font(Font.MONOSPACED,Font.PLAIN,15);
 	private static final Color BACKGROUND_COLOR = new Color(230,190,120);
 	private static final Color BUTTON_COLOR = new Color(212,197,200);
-	GameFrame local;
-	Player player;
-	String lastWeapon = "candlestick";
-	String lastPerson = "scarlett";
+	private GameFrame local;
+	private Player player;
+	private String lastWeapon = "candlestick";
+	private String lastPerson = "scarlett";
 	public SuggestionWindow(GameFrame local, Player p){
 		super(local, p.getName() + "'s Suggestion");
 		this.local = local;
@@ -38,7 +38,14 @@ public class SuggestionWindow extends JDialog{
 		setResizable(false);
 		setVisible(true);
 	}
-
+	
+	public String getWeapon(){
+		return lastWeapon;
+	}
+	public String getCharacter(){
+		return lastPerson;
+	}
+	
 	private void setButtonPanel() {
 		JPanel buttonPanel = new JPanel(new GridLayout(5,1));
 		JButton submitSuggestion = new JButton(new AbstractAction("Submit Suggestion"){

@@ -229,7 +229,7 @@ public class CluedoTests {
 		//room
 		RoomCard rc = new RoomCard("STUDY");
 		p.takeCard(rc);
-		assertEquals(p.answerSuggestion(null, rc, null),rc);
+		assertEquals(p.answerSuggestion(rc, null, null),rc);
 		//weapon
 
 	}
@@ -249,7 +249,7 @@ public class CluedoTests {
 		Player p = new Player("David");
 		WeaponCard wc = new WeaponCard("REVOLVER");
 		p.takeCard(wc);
-		assertEquals(p.answerSuggestion(wc, null, null),wc);
+		assertEquals(p.answerSuggestion(null, wc, null),wc);
 	}
 
 	@Test
@@ -258,7 +258,7 @@ public class CluedoTests {
 		Player p = new Player("David");
 		p.takeCard(new WeaponCard("REVOLVER"));
 		assertEquals(p.getHand().size(),1);
-		assertNull(p.answerSuggestion(new WeaponCard("CANDLESTICK"), new RoomCard("STUDY"), new CharacterCard("WHITE")));
+		assertNull(p.answerSuggestion( new RoomCard("STUDY"),new WeaponCard("CANDLESTICK"), new CharacterCard("WHITE")));
 	}
 
 	/*

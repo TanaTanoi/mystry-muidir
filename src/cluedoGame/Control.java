@@ -6,7 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import Graphics.AccusationWindow;
 import Graphics.GameFrame;
+import Graphics.SuggestionWindow;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -65,34 +69,44 @@ public class Control {
 		frame = new GameFrame(this);
 	}
 
-	/**
-	 * Asks the current player for a weapon card, for use with accusations and
-	 * suggestions.
-	 * @return
-	 */
-	public WeaponCard requestWeaponCard(){
 
-		return null;
+	public Card[] requestSuggestion(Player p){
+		//new AccusationWindow(frame, p);
+		SuggestionWindow window = new SuggestionWindow(frame,p);
+		String weapon = "",character = "";
+		while(window.isShowing()){//wait until its done to actually do something with the values
+			weapon = window.getWeapon();
+			character = window.getCharacter();
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println(weapon + " " + character);
+		Card[] cards =  {new WeaponCard(weapon),new CharacterCard(character)};
+		return cards;
 	}
-
-	/**
-	 * Asks the current player for a character card, for use with accusations
-	 * and suggestions.
-	 * @return
-	 */
-	public CharacterCard requestCharacterCard(){
-
-		return null;
+	
+	public Card[] requestAccusation(Player p){
+		AccusationWindow window = new AccusationWindow(frame,p);
+		String weapon = "",character = "",room="";
+		while(window.isShowing()){//wait until its done to actually do something with the values
+			weapon = window.getWeapon();
+			character = window.getCharacter();
+			room = window.getRoom();
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Card[] cards =  {new RoomCard(room),new WeaponCard(weapon),new CharacterCard(character)};
+		return cards;
 	}
-
-	/**
-	 * Asks the current player for a room card, for use with accusations.
-	 * @return
-	 */
-	public RoomCard requestRoomCard(){
-
-		return null;
-	}
+	
+	
 	/**
 	 * Asks the user n (which corresponds to a character portrait)
 	 * for their player name and returns the string.
@@ -118,7 +132,7 @@ public class Control {
 	 * @param diceRoll - The player's dice roll
 	 */
 	public void displayPlayerInformation(Player p){
-		//TOOD
+		//TODO display the players cards
 	}
 
 	/**
@@ -134,7 +148,6 @@ public class Control {
 	 */
 	public Point displayPlayerMove(Set<Point> reachablePoints, Set<Room.RoomName> reachableRooms,Player p){
 		currentPlayer = p;
-		System.out.println("Asking for move");
 		this.reachablePoints = reachablePoints;
 		for(Room.RoomName rn:reachableRooms){
 			reachableRoomNames.add(rn.toString());
@@ -152,7 +165,6 @@ public class Control {
 				(b.getRoom(frame.clickedP)==null||
 				!reachableRoomNames.contains(b.getRoom(frame.clickedP).toString()))
 				);
-		System.out.println("Returning " +frame.clickedP.toString());
 		movePlayerAnimation(p, frame.clickedP);
 		this.reachablePoints.clear();
 		this.reachableRoomNames.clear();

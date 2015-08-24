@@ -40,7 +40,12 @@ public class AccusationWindow extends JDialog{
 		setResizable(false);
 		setVisible(true);
 	}
-
+	
+	public String getWeapon(){return lastWeapon;}
+	public String getCharacter(){return lastPerson;}
+	public String getRoom(){return lastRoom;}
+	
+	
 	private void setButtonPanel() {
 		JPanel buttonPanel = new JPanel(new GridLayout(5,1));
 		JButton submitSuggestion = new JButton(new AbstractAction("Submit Suggestion"){

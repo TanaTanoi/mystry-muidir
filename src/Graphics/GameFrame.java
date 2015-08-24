@@ -47,7 +47,6 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		canvas = new GameCanvas(control);
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
-		new AccusationWindow(this, new Player("dave"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setResizable(true);

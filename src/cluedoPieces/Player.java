@@ -46,7 +46,7 @@ public class Player {
 	 * @param c Suggested victim
 	 * @return - w, r, or c cards if they have it, else null
 	 */
-	public Card answerSuggestion(WeaponCard w, RoomCard r, CharacterCard c){
+	public Card answerSuggestion(RoomCard r,WeaponCard w, CharacterCard c){
 		if(hand.contains(w)){
 			return w;
 		}else if(hand.contains(c)){
