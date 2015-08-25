@@ -48,8 +48,8 @@ public class Control {
 	/*The scale of the names of the rooms */
 	private static final double NAME_FONT_SCALE = 0.6;
 	
-	private static final Font ITALIC_SERIF= new Font("Serif",Font.ITALIC,12);
-	private static final Font BOLD_SERIF= new Font(Font.SERIF,Font.BOLD,12);
+	private static final Font ITALIC_SERIF= new Font("Serif",Font.ITALIC,16);
+	private static final Font BOLD_SERIF= new Font(Font.SERIF,Font.BOLD,20);
 	Map<String,Point> roomNames;
 
 	private Set<Point> reachablePoints = new HashSet<Point>();
@@ -147,12 +147,14 @@ public class Control {
 	 */
 	public void displayPlayerInformation(Player p){
 		StringBuilder sb = new StringBuilder();
+		sb.append(p.getName());
+		sb.append("'s turn!\n");
 		sb.append("Your cards are; \n");
 		for(Card c:p.getHand()){
 			sb.append(c);
 			sb.append("\n");
 		}
-		frame.setCardDisplay(sb.toString());
+		frame.setCardDisplay(sb.toString(),ITALIC_SERIF);
 	}
 
 	/**
@@ -205,8 +207,7 @@ public class Control {
 		RefuteWindow rw = new RefuteWindow(frame);
 		
 		rw.setText(sb.toString(), ITALIC_SERIF);
-		//System.out.println(sb.toString());
-		frame.setCardDisplay("CARD ");
+
 	}	
 	/**
 	 * Displays the winning player
