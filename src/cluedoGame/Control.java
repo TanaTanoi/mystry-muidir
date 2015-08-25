@@ -188,8 +188,13 @@ public class Control {
 	 * @param c
 	 */
 	public void displayRefutedCard(Player p, Card c){
-		//TODO
-	}
+		StringBuilder sb = new StringBuilder();
+		sb.append(p.getName()); 
+		sb.append(" has refuted your suggestion with the card ");
+		sb.append(c);
+		System.out.println(sb.toString());
+		frame.setCardDisplay(sb.toString());
+	}	
 	/**
 	 * Displays the winning player
 	 * @param p

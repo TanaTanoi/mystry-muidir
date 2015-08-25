@@ -418,7 +418,7 @@ public class Board {
 	 * @return - Room at this point, null if not a room
 	 */
 	public Room.RoomName getRoom(Point p){
-		if(p.x>boardSize||p.y>boardSize||p.x<0||p.y<0)throw new IllegalArgumentException("Point must be within board area");
+		if(p.x>boardSize||p.y>boardSize||p.x<0||p.y<0)return null;
 		Square tile = board[p.x][p.y];
 		if(!(doors.contains(tile)||tile==Square.OPEN)){	//if room
 			try{
