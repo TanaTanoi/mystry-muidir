@@ -73,13 +73,10 @@ public class GameCanvas extends JPanel{
 		g.drawImage(control.getBoardImage(boardSize), 10,10,boardSize,boardSize,this); //draw the board itself, leaving space for menu and cards
 	}
 
-	public float getSquareSize(){
-		int width = (int)getSize().getWidth();
-		int height = (int)getSize().getHeight();
-		return (Math.min(width, height)-Board.boardSize)/Board.boardSize;
+	public double getSquareSize(){
+		double width = getSize().getWidth();
+		double height = getSize().getHeight();
+		return (Math.min(width, height)-Board.boardSize)/(double)Board.boardSize;
 	}
 
-	public void drawPlayer(Set<Player> players){
-
-	}
 }

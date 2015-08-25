@@ -109,7 +109,7 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	 * @return the point on the board that was clicked
 	 */
 	private Point findCoords(int x, int y){
-		float sqSize = canvas.getSquareSize();
+		double sqSize = canvas.getSquareSize();
 		int xSquare = (int)((x-BOARD_LEFT)/sqSize);
 		int ySquare = (int)((y-BOARD_TOP)/sqSize);
 		return new Point(xSquare,ySquare);

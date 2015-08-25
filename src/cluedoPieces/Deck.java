@@ -35,7 +35,6 @@ public class Deck {
 		}else{
 			throw new IllegalArgumentException("Requires a deck to be built before use!");
 		}
-		System.out.println(murderCards[0]+" " +murderCards[1]+ " " +murderCards[2] );
 	}
 
 	/**

@@ -127,7 +127,6 @@ public class Board {
 				sc2.useDelimiter("");
 				while(sc2.hasNext()){
 					String input = sc2.next();
-					//					System.out.print(input + "|");
 					board[x][y] = layoutLegend.get(input);
 					if(board[x][y].toString().contains("DOOR")){
 						String title = board[x][y].toString();
@@ -139,7 +138,6 @@ public class Board {
 						int num = Integer.parseInt(input)-1;
 						startingPoints[num] = new Point(x,y);
 					}
-					//	System.out.print("|"+i+" " +j+  " " + input+"|");
 					x++;
 
 				}
@@ -278,7 +276,6 @@ public class Board {
 		Set<Point> roomsDoors = findEnum(door);						//Find the points to do with that door
 		Set<Room.RoomName> toReturn = new HashSet<Room.RoomName>();
 		for(Point p:roomsDoors){
-			System.out.println("Start: " + p.x + " " + p.y);
 			toReturn.addAll(reachableRooms(p,radius));				//At all the door points, call the regular method
 		}
 		//SPECIAL CASES: Trap doors between corner rooms
@@ -467,8 +464,6 @@ public class Board {
 			double count = temp.z;
 			int x = (int)(temp.x/count);
 			int y = (int)(temp.y/count);
-			System.out.println("Count " + count  + "  TEMP X|Y " + temp.x + "|"+temp.x);
-			System.out.println(x + " " +y);
 			toReturn.put(s, new Point(x,y));
 		}
 	return toReturn;
