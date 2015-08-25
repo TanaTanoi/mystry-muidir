@@ -22,7 +22,7 @@ public class RefuteWindow extends JDialog{
 		setBackground(new Color(0,50,0));
 		this.local = local;
 		
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		
 		this.setSize(400, 300);

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import Graphics.AccusationWindow;
 import Graphics.GameFrame;
+import Graphics.RefuteWindow;
 import Graphics.SuggestionWindow;
 
 import java.awt.BasicStroke;
@@ -46,6 +47,8 @@ public class Control {
 	private static final int GRID_COLOR_OFFSET = -10;
 	/*The scale of the names of the rooms */
 	private static final double NAME_FONT_SCALE = 0.6;
+	
+	private static final Font ITALIC_SERIF= new Font("Serif",Font.ITALIC,12);
 	Map<String,Point> roomNames;
 
 	private Set<Point> reachablePoints = new HashSet<Point>();
@@ -142,7 +145,13 @@ public class Control {
 	 * @param diceRoll - The player's dice roll
 	 */
 	public void displayPlayerInformation(Player p){
-		//TODO display the players cards
+		StringBuilder sb = new StringBuilder();
+		sb.append("Your cards are; \n");
+		for(Card c:p.getHand()){
+			sb.append(c);
+			sb.append("\n");
+		}
+		frame.setCardDisplay(sb.toString());
 	}
 
 	/**
@@ -192,8 +201,11 @@ public class Control {
 		sb.append(p.getName()); 
 		sb.append(" has refuted your suggestion with the card ");
 		sb.append(c);
-		System.out.println(sb.toString());
-		frame.setCardDisplay(sb.toString());
+		RefuteWindow rw = new RefuteWindow(frame);
+		
+		rw.setText(sb.toString(), ITALIC_SERIF);
+		//System.out.println(sb.toString());
+		frame.setCardDisplay("CARD ");
 	}	
 	/**
 	 * Displays the winning player
