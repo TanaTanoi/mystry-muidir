@@ -40,6 +40,7 @@ public class PlayerWindow extends JDialog{
 	String buttonSelected;
 	JPanel filler;
 	Font font = new Font(Font.MONOSPACED,Font.PLAIN,15);
+	JRadioButton lastPlayerButton;
 
 	public PlayerWindow(GameFrame local){
 		super(local, "Player Selection");
@@ -130,6 +131,7 @@ public class PlayerWindow extends JDialog{
 						    "Cannot have a character picked more than once");
 				}
 				else {
+					lastPlayerButton.setEnabled(false);
 					Player p = new Player(name);
 					p.setCharacter(buttonSelected);
 					players.add(p);
@@ -157,37 +159,50 @@ public class PlayerWindow extends JDialog{
 		characters = new ButtonGroup();
 		radioButtons = new JPanel(new GridLayout(6,1));
 		JRadioButton scarlett = new JRadioButton(new AbstractAction("Miss Scarlett") {
-			public void actionPerformed(ActionEvent e){setLastPressed("Scarlett");}
+			public void actionPerformed(ActionEvent e){
+				setLastPressed("Scarlett");
+				lastPlayerButton = (JRadioButton)radioButtons.getComponent(0);
+			}
 		});
 		characters.add(scarlett);
 		radioButtons.add(scarlett);
 		scarlett.setBackground(BACKGROUND_COLOR);
 		JRadioButton mustard = new JRadioButton(new AbstractAction("Colonel Mustard") {
-			public void actionPerformed(ActionEvent e){setLastPressed("Mustard");}
+			public void actionPerformed(ActionEvent e){
+				setLastPressed("Mustard");
+				lastPlayerButton = (JRadioButton)radioButtons.getComponent(1);
+			}
 		});
 		characters.add(mustard);
 		radioButtons.add(mustard);
 		mustard.setBackground(BACKGROUND_COLOR);
 		JRadioButton white = new JRadioButton(new AbstractAction("Mrs White") {
-			public void actionPerformed(ActionEvent e){setLastPressed("White");}
+			public void actionPerformed(ActionEvent e){setLastPressed("White");
+			lastPlayerButton = (JRadioButton)radioButtons.getComponent(2);}
 		});
 		characters.add(white);
 		radioButtons.add(white);
 		white.setBackground(BACKGROUND_COLOR);
 		JRadioButton reverend = new JRadioButton(new AbstractAction("Reverend Green") {
-			public void actionPerformed(ActionEvent e){setLastPressed("Reverend");}
+			public void actionPerformed(ActionEvent e){setLastPressed("Reverend");
+			lastPlayerButton = (JRadioButton)radioButtons.getComponent(3);
+			}
 		});
 		characters.add(reverend);
 		radioButtons.add(reverend);
 		reverend.setBackground(BACKGROUND_COLOR);
 		JRadioButton peacock = new JRadioButton(new AbstractAction("Mrs Peacock") {
-			public void actionPerformed(ActionEvent e){setLastPressed("Peacock");}
+			public void actionPerformed(ActionEvent e){setLastPressed("Peacock");
+			lastPlayerButton = (JRadioButton)radioButtons.getComponent(4);
+			}
 		});
 		characters.add(peacock);
 		radioButtons.add(peacock);
 		peacock.setBackground(BACKGROUND_COLOR);
 		JRadioButton plum = new JRadioButton(new AbstractAction("Professor Plum") {
-			public void actionPerformed(ActionEvent e){setLastPressed("Plum");}
+			public void actionPerformed(ActionEvent e){setLastPressed("Plum");
+			lastPlayerButton = (JRadioButton)radioButtons.getComponent(5);
+			}
 		});
 		characters.add(plum);
 		radioButtons.add(plum);
@@ -195,6 +210,7 @@ public class PlayerWindow extends JDialog{
 		plum.setBackground(BACKGROUND_COLOR);
 		scarlett.setSelected(true);
 		buttonSelected = "Scarlett";
+		lastPlayerButton = scarlett;
 	}
 
 	/**

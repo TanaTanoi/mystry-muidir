@@ -24,13 +24,14 @@ import javax.swing.JPanel;
 
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import cluedoGame.Control;
 import cluedoPieces.Board;
 import cluedoPieces.Player;
 
 
-public class GameFrame extends JFrame implements MouseListener, MouseMotionListener{
+public class GameFrame extends JFrame implements MouseListener, MouseMotionListener,KeyListener{
 	private static final int BOARD_TOP = 60;//FIXME 
 	private static final int BOARD_LEFT= 15;
 	private static final int MINIMUM_SIZE = 400;
@@ -47,8 +48,16 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		this.control = control;
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addKeyListener(this);
 		addMenuBar();
 		canvas = new GameCanvas(control);
+		canvas.getInputMap().put(KeyStroke.getKeyStroke('n'), "Start");
+		canvas.getActionMap().put("Start",new AbstractAction("StartGame") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startNewGame();
+			}		
+		});
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -134,4 +143,25 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	/*
 	 * UNUSED LISTENER METHODS
 	 */
+
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("holla holla");
+	}
 }
