@@ -31,7 +31,7 @@ import cluedoPieces.Board;
 import cluedoPieces.Player;
 
 
-public class GameFrame extends JFrame implements MouseListener, MouseMotionListener,KeyListener{
+public class GameFrame extends JFrame implements MouseListener, MouseMotionListener{
 	private static final int BOARD_TOP = 60;//FIXME 
 	private static final int BOARD_LEFT= 15;
 	private static final int MINIMUM_SIZE = 400;
@@ -43,12 +43,12 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	private JTextArea cardDisplay;
 	GameCanvas canvas;
 	Board board;
+	PlayerWindow startingWindow;
 	public GameFrame(Control control){
 		super("Cluedo");
 		this.control = control;
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		addKeyListener(this);
 		addMenuBar();
 		canvas = new GameCanvas(control);
 		setBindings();
@@ -62,6 +62,10 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		setVisible(true);
 	}
 	
+	
+	/**
+	 * Sets hotkeys for starting new game
+	 */
 	private void setBindings(){
 		canvas.getInputMap().put(KeyStroke.getKeyStroke('N'), "Start");
 		canvas.getInputMap().put(KeyStroke.getKeyStroke('n'), "Start");
@@ -88,7 +92,7 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	}
 
 	private void startNewGame(){
-		new PlayerWindow(this);
+		startingWindow = new PlayerWindow(this);
 	}
 
 	private void addCardPanel(){
@@ -148,25 +152,4 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	/*
 	 * UNUSED LISTENER METHODS
 	 */
-
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println("holla holla");
-	}
 }
