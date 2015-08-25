@@ -26,7 +26,7 @@ import cluedoPieces.Player;
 
 
 public class GameCanvas extends JPanel{
-	Control control;
+	private Control control;
 
 	public GameCanvas(Control control){
 		super();
@@ -73,7 +73,7 @@ public class GameCanvas extends JPanel{
 		g.drawImage(control.getBoardImage(boardSize), 10,10,boardSize,boardSize,this); //draw the board itself, leaving space for menu and cards
 	}
 
-	public int getSquareSize(){
+	public float getSquareSize(){
 		int width = (int)getSize().getWidth();
 		int height = (int)getSize().getHeight();
 		return (Math.min(width, height)-Board.boardSize)/Board.boardSize;

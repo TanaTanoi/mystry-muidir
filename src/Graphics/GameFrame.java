@@ -28,14 +28,14 @@ import cluedoPieces.Player;
 
 
 public class GameFrame extends JFrame implements MouseListener, MouseMotionListener{
-	private static final int BOARD_TOP = 60;
-	private static final int BOARD_LEFT= 15;
+	private static final int BOARD_TOP = 62;//FIXME 
+	private static final int BOARD_LEFT= 18;
 	private static final int MINIMUM_SIZE = 400;
-
+	
 
 	public Control control;
 	public Point clickedP = null;
-
+	public Point movedP = null;
 	GameCanvas canvas;
 	Board board;
 	public GameFrame(Control control){
@@ -77,8 +77,6 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		JPanel buttonPanel = new JPanel(new GridLayout(5, 1));//so the buttons will all align vertically
 		JButton roll= new JButton(new AbstractAction("Roll Die") {
 			public void actionPerformed(ActionEvent e){
-				//TODO roll random number
-				System.out.println("dicks");
 			}
 		});
 		JButton endTurn= new JButton(new AbstractAction("End Turn") {
@@ -96,12 +94,11 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	public void mouseReleased(MouseEvent e) {
 		//TODO write code for detecting what square the mouse is released on\
 		Point p = findCoords(e.getX(),e.getY());
-		System.out.println("X = "+p.x+" Y= "+p.y);
 		clickedP = p;
 	}
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		//TODO write code for detecting what is being hovered over
+		movedP = findCoords(e.getX(),e.getY());
 	}
 
 
@@ -112,9 +109,9 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	 * @return the point on the board that was clicked
 	 */
 	private Point findCoords(int x, int y){
-		int sqSize = canvas.getSquareSize();
-		int xSquare = (x-BOARD_LEFT)/sqSize;
-		int ySquare = (y-BOARD_TOP)/sqSize;
+		float sqSize = canvas.getSquareSize();
+		int xSquare = (int)((x-BOARD_LEFT)/sqSize);
+		int ySquare = (int)((y-BOARD_TOP)/sqSize);
 		return new Point(xSquare,ySquare);
 	}
 

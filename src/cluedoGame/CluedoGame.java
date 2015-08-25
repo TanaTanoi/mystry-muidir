@@ -64,6 +64,7 @@ public class CluedoGame {
 	 * @return - True if the player is correct and the game is over. False if player is wrong or no accusation made
 	 */
 	private boolean playerTurn(Player p){
+		if(!p.isActive())return true;
 		//Display information
 		control.displayPlayerInformation(p);
 		//Roll die and calculate possible locations to move
@@ -99,7 +100,7 @@ public class CluedoGame {
 	 */
 	private void makeSuggestion(Player p){
 		RoomCard room= new RoomCard(p.getCurrentRoom());
-		Card[] WandC = control.requestSuggestion(p);//TODO get return
+		Card[] WandC = control.requestSuggestion(p);
 		if(WandC.length!=2){throw new IllegalArgumentException("Must have two cards, weapon and character!");}
 		for(Player otherPlayer: players){
 			if(p==otherPlayer){continue;}//skip primary player
@@ -120,16 +121,19 @@ public class CluedoGame {
 	private boolean makeAccusation(Player p){
 		Card[] cards = control.requestAccusation(p);
 		if(cards.length!=3){throw new IllegalArgumentException("Must have three cards,room, weapon and character!");}
-		return deck.compareMurderCards(cards);
+		if(deck.compareMurderCards(cards)){
+			return true;
+		}else{
+			p.setInactive();
+			return false;
+		}
 	}
-
-
 
 	/**
 	 * Takes place of dice roll - generates random number from 1-6
 	 * @return random number from 1 - 6
 	 */
-	public static int rollDie(){
+	private static int rollDie(){
 		return (int)(Math.random()*6+1);
 	}
 

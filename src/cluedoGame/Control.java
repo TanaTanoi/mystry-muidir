@@ -38,7 +38,6 @@ public class Control {
 	private static final Color HALLWAY_COLOR = new Color(230,190,120);
 	private static final Color ROOM_COLOR = new Color(212,197,200);
 	private static final Color WALL_COLOR = new Color(130,100,100);
-	private static final Color GRID_COLOR = new Color(100,10,10);
 	/*Controls the color and color change of highlighted squares*/
 	private static final  Color HIGHLIGHT_COLOR = new Color(230,230,80);
 	private static int HIGHLIGHT_PHASE = -2;
@@ -69,7 +68,12 @@ public class Control {
 		frame = new GameFrame(this);
 	}
 
-
+	/**
+	 * Asks the user for a suggestion. 
+	 * This opens a new window that can only be closed once the player has clicked submit.
+	 * @param p - Player who is suggesting
+	 * @return - A Length 2 array where 0-Weapon, 1-Character cards
+	 */
 	public Card[] requestSuggestion(Player p){
 		//new AccusationWindow(frame, p);
 		SuggestionWindow window = new SuggestionWindow(frame,p);
@@ -83,11 +87,17 @@ public class Control {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(weapon + " " + character);
 		Card[] cards =  {new WeaponCard(weapon),new CharacterCard(character)};
 		return cards;
 	}
 	
+	/**
+	 * Asks the player for an accusation.
+	 * This opens a new window that can only be closed once the player has submitted 
+	 * the accusation.
+	 * @param p
+	 * @return - A Length 3 array where 0-Room,1-Weapon,2-Character cards
+	 */
 	public Card[] requestAccusation(Player p){
 		AccusationWindow window = new AccusationWindow(frame,p);
 		String weapon = "",character = "",room="";
@@ -185,6 +195,7 @@ public class Control {
 	 * @param p
 	 */
 	public void displayWinner(Player p){
+		System.out.println("WINNER IS " + p.getName());
 		//TODO
 	}
 
@@ -222,7 +233,6 @@ public class Control {
 						g.setColor(SPAWN_COLOR);
 						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 					}else{
-
 						g.setColor(ROOM_COLOR); //slightly darker than the hallway
 						g.fillRect(x*squareSize,y*squareSize,squareSize,squareSize);
 						g.setStroke(new BasicStroke(4));
@@ -268,12 +278,6 @@ public class Control {
 
 		drawWalls(g,frameSize);
 		highlightSquares(g);
-		g.setStroke(new BasicStroke(1));
-		g.setColor(GRID_COLOR);
-		/*for (int i = 1; i < Board.boardSize-1; i++){ //Draws grid over top
-			g.drawLine(i*squareSize, squareSize, i*squareSize, frameSize-squareSize);
-			g.drawLine(squareSize,i*squareSize,frameSize-squareSize, i*squareSize);
-		}*/
 		g.setStroke(new BasicStroke(8));//change line thickness for drawing game boarders
 		g.setColor(Color.black);
 		g.drawLine(0, 0, frameSize, 0); //TOP
@@ -330,7 +334,6 @@ public class Control {
 	 * @param newPos - The position this player is traveling to
 	 */
 	private void movePlayerAnimation(Player p,Point newPos){
-		System.out.println(p.getPos().toString() + " "+ newPos.toString());
 		p.fakeX = newPos.x;
 		p.fakeY = newPos.y;
 		double incX = (newPos.x-p.getPos().x)/ANIMATION_STEPS;
@@ -366,7 +369,11 @@ public class Control {
 		Set<Point> localPoints = new HashSet<Point>();//avoid concurrent modification of reachablePoints
 		localPoints.addAll(reachablePoints);
 		for(Point p:localPoints){
-			drawSquareGrid(p.x, p.y, H_FLASH, g, squareSize);
+			if(p.equals(frame.movedP)){
+				drawSquareGrid(p.x, p.y, H_FLASH.brighter().brighter(), g, squareSize);
+			}else{
+				drawSquareGrid(p.x, p.y, H_FLASH, g, squareSize);
+			}
 		}
 	}
 

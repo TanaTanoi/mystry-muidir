@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 import org.junit.*;
 
 import cluedoGame.CluedoGame;
-import cluedoGame.TextInterface;
 import cluedoPieces.*;
 import cluedoPieces.Room.RoomName;
 
@@ -79,27 +78,6 @@ public class CluedoTests {
 		}
 	}
 
-	/*
-	 *---------------------------
-	 *------Cluedo Game Class tests----
-	 *---------------------------
-	 */
-	@Test
-	public void test_dice(){
-		//COMPREHENSIVE DICE ROLLING TESTS
-		Map<Integer,Integer> distb = new HashMap<Integer,Integer>();
-		for(int i = 0; i < 1000;i++){
-			int x = CluedoGame.rollDie();
-			if(distb.containsKey(x)){
-				distb.put(x, distb.get(x)+1);
-			}else{
-				distb.put(x, 1);
-			}
-			assertTrue(x >0);
-			assertTrue( x < 7);
-		}
-		assertEquals( distb.size(),6);
-	}
 
 	/*
 	 *---------------------------
@@ -282,9 +260,10 @@ public class CluedoTests {
 	 */
 
 
-	@Test
+	/*Deprecated
+	 * @Test
 	public void textInterface_test_1(){
 		TextInterface ui = new TextInterface();
 		ui.print("Test Message");
-	}
+	}*/
 }
