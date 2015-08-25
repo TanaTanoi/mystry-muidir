@@ -51,13 +51,7 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		addKeyListener(this);
 		addMenuBar();
 		canvas = new GameCanvas(control);
-		canvas.getInputMap().put(KeyStroke.getKeyStroke('n'), "Start");
-		canvas.getActionMap().put("Start",new AbstractAction("StartGame") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				startNewGame();
-			}		
-		});
+		setBindings();
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,6 +60,17 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		setResizable(true);
 		setMinimumSize(new Dimension(MINIMUM_SIZE, MINIMUM_SIZE));
 		setVisible(true);
+	}
+	
+	private void setBindings(){
+		canvas.getInputMap().put(KeyStroke.getKeyStroke('N'), "Start");
+		canvas.getInputMap().put(KeyStroke.getKeyStroke('n'), "Start");
+		canvas.getActionMap().put("Start",new AbstractAction("StartGame") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startNewGame();
+			}		
+		});
 	}
 
 
