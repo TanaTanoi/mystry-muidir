@@ -22,20 +22,24 @@ import javax.swing.JPanel;
 //import com.sun.xml.internal.ws.message.MimeAttachmentSet;
 
 
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import cluedoGame.Control;
 import cluedoPieces.Board;
 import cluedoPieces.Player;
 
 
 public class GameFrame extends JFrame implements MouseListener, MouseMotionListener{
-	private static final int BOARD_TOP = 62;//FIXME 
-	private static final int BOARD_LEFT= 18;
+	private static final int BOARD_TOP = 60;//FIXME 
+	private static final int BOARD_LEFT= 15;
 	private static final int MINIMUM_SIZE = 400;
 	
 
 	public Control control;
 	public Point clickedP = null;
 	public Point movedP = null;
+	private JTextArea cardDisplay;
 	GameCanvas canvas;
 	Board board;
 	public GameFrame(Control control){
@@ -48,6 +52,7 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addCardPanel();
 		pack();
 		setResizable(true);
 		setMinimumSize(new Dimension(MINIMUM_SIZE, MINIMUM_SIZE));
@@ -72,22 +77,18 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		new PlayerWindow(this);
 	}
 
-	private void addButtons(){
-		Color panelColor = new Color(0,30,0);
-		JPanel buttonPanel = new JPanel(new GridLayout(5, 1));//so the buttons will all align vertically
-		JButton roll= new JButton(new AbstractAction("Roll Die") {
-			public void actionPerformed(ActionEvent e){
-			}
-		});
-		JButton endTurn= new JButton(new AbstractAction("End Turn") {
-			public void actionPerformed(ActionEvent e){
-				//TODO Change to next player
-			}
-		});
-		buttonPanel.add(roll);
-		buttonPanel.add(endTurn);
-		buttonPanel.setBackground(panelColor);
-		this.add(buttonPanel, BorderLayout.EAST);
+	private void addCardPanel(){
+		JPanel cardPanel = new JPanel();//so the buttons will all align vertically
+		cardDisplay = new JTextArea();
+		cardDisplay.setPreferredSize(new Dimension(200,getHeight()));
+		cardDisplay.setEditable(false);
+		cardDisplay.setLineWrap(true);
+		cardPanel.add(cardDisplay);
+		this.add(cardPanel, BorderLayout.EAST);
+	}
+	
+	public void setCardDisplay(String text){
+		cardDisplay.setText(text);
 	}
 
 	@Override
