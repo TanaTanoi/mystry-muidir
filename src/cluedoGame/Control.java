@@ -49,6 +49,7 @@ public class Control {
 	private static final double NAME_FONT_SCALE = 0.6;
 	
 	private static final Font ITALIC_SERIF= new Font("Serif",Font.ITALIC,12);
+	private static final Font BOLD_SERIF= new Font(Font.SERIF,Font.BOLD,12);
 	Map<String,Point> roomNames;
 
 	private Set<Point> reachablePoints = new HashSet<Point>();
@@ -213,7 +214,8 @@ public class Control {
 	 */
 	public void displayWinner(Player p){
 		System.out.println("WINNER IS " + p.getName());
-		//TODO
+		RefuteWindow rw = new RefuteWindow(frame);
+		rw.setText("The winner is " +p.getName() ,BOLD_SERIF );
 	}
 
 
