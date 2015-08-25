@@ -2,6 +2,7 @@ package Graphics;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -96,16 +97,22 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	}
 
 	private void addCardPanel(){
-		JPanel cardPanel = new JPanel();//so the buttons will all align vertically
+		
 		cardDisplay = new JTextArea();
 		cardDisplay.setPreferredSize(new Dimension(200,getHeight()));
 		cardDisplay.setEditable(false);
 		cardDisplay.setLineWrap(true);
-		cardPanel.add(cardDisplay);
-		this.add(cardPanel, BorderLayout.EAST);
+		this.add(cardDisplay, BorderLayout.EAST);
 	}
 	
-	public void setCardDisplay(String text){
+	
+	/**
+	 * controls text in right hand text pane. Used to displayplayers card
+	 * @param text Text to be displays
+	 * @param font font the text will be in
+	 */
+	public void setCardDisplay(String text, Font font){
+		cardDisplay.setFont(font);
 		cardDisplay.setText(text);
 	}
 

@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import cluedoPieces.Player;
 
 public class RefuteWindow extends JDialog{
+	private static final Font HEADER_FONT = new Font(Font.MONOSPACED,Font.PLAIN,15);
 	GameFrame local;
 	JTextArea textOut;
 	public RefuteWindow(GameFrame local){
@@ -28,7 +29,7 @@ public class RefuteWindow extends JDialog{
 		this.setSize(400, 300);
 		//Fill display
 		drawDisplay();
-		
+		setText("yolo", HEADER_FONT);
 		
 		
 		setResizable(false);
