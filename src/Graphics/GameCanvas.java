@@ -58,6 +58,10 @@ public class GameCanvas extends JPanel{
 		return new Dimension(500,500);
 	}
 
+	/**
+	 * paints the board onto the canvas
+	 * @param g graphics object that the board is to be painted to
+	 */
 	private void paintBackground(Graphics2D g){
 		int width = (int)getSize().getWidth();
 		int height = (int)getSize().getHeight();
@@ -73,6 +77,10 @@ public class GameCanvas extends JPanel{
 		g.drawImage(control.getBoardImage(boardSize), 10,10,boardSize,boardSize,this); //draw the board itself, leaving space for menu and cards
 	}
 
+	/**
+	 * Get the size of an indivdual square
+	 * @return the size of each square on the board at the current time
+	 */
 	public double getSquareSize(){
 		double width = getSize().getWidth();
 		double height = getSize().getHeight();

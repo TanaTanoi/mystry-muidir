@@ -52,11 +52,11 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		addMouseMotionListener(this);
 		addMenuBar();
 		canvas = new GameCanvas(control);
-		setBindings();
 		setLayout(new BorderLayout());
 		add(canvas, BorderLayout.CENTER);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addCardPanel();
+		setBindings();
 		pack();
 		setResizable(true);
 		setMinimumSize(new Dimension(MINIMUM_SIZE, MINIMUM_SIZE));
@@ -68,14 +68,19 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 	 * Sets hotkeys for starting new game
 	 */
 	private void setBindings(){
-		canvas.getInputMap().put(KeyStroke.getKeyStroke('N'), "Start");
-		canvas.getInputMap().put(KeyStroke.getKeyStroke('n'), "Start");
-		canvas.getActionMap().put("Start",new AbstractAction("StartGame") {
+		AbstractAction a = new AbstractAction("StartGame") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				startNewGame();
 			}		
-		});
+		};
+		canvas.getInputMap().put(KeyStroke.getKeyStroke('N'), "Start");
+		canvas.getInputMap().put(KeyStroke.getKeyStroke('n'), "Start");
+		canvas.getActionMap().put("Start",a);
+		
+		cardDisplay.getInputMap().put(KeyStroke.getKeyStroke('N'), "Start");
+		cardDisplay.getInputMap().put(KeyStroke.getKeyStroke('n'), "Start");
+		cardDisplay.getActionMap().put("Start",a);
 	}
 
 
@@ -96,8 +101,11 @@ public class GameFrame extends JFrame implements MouseListener, MouseMotionListe
 		startingWindow = new PlayerWindow(this);
 	}
 
-	private void addCardPanel(){
-		
+	
+	/**
+	 * adds text feild for card display
+	 */
+	private void addCardPanel(){	
 		cardDisplay = new JTextArea();
 		cardDisplay.setPreferredSize(new Dimension(200,getHeight()));
 		cardDisplay.setEditable(false);

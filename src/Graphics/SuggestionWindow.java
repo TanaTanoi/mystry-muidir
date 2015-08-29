@@ -45,7 +45,7 @@ public class SuggestionWindow extends JDialog{
 	public String getCharacter(){
 		return lastPerson;
 	}
-	
+
 	private void setButtonPanel() {
 		JPanel buttonPanel = new JPanel(new GridLayout(5,1));
 		JButton submitSuggestion = new JButton(new AbstractAction("Submit Suggestion"){
